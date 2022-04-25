@@ -154,18 +154,18 @@ cantidadDePolillas
 	^cantidadDePolillas.
 	! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/25/2022 09:36:35'!
-eliminarHuevos
+!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/25/2022 10:35:38'!
+huevosAlInicioDeLosTiempos
 	cantidadDeHuevosDeAvispaOmega := 0.
 	cantidadDeHuevosDeAvispaPi := 0.
 	cantidadDeHuevosDeAvispaLambda := 0.! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/21/2022 20:22:30'!
-eliminarOrugas
+!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/25/2022 10:36:02'!
+orugasAlInicioDeLosTiempos
 	cantidadDeOrugas := 0.! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/22/2022 12:32:42'!
-eliminarPolillas
+!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/25/2022 10:36:18'!
+polillasAlInicioDeLosTiempos
 	cantidadDePolillas := 0.! !
 
 !HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/21/2022 20:21:12'!
@@ -177,7 +177,7 @@ quitarUnaPolilla
 	cantidadDePolillas := cantidadDePolillas - 1.! !
 
 
-!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'MU 4/25/2022 09:40:16'!
+!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'MU 4/25/2022 10:36:45'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -453,10 +453,10 @@ queElHabitatTengaUnaOrugaMas
 queElHabitatTengaUnaPolillaMas
 	HabitatDeAvispas agregarUnaPolilla.! !
 
-!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'MU 4/22/2022 12:32:15'!
+!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'MU 4/25/2022 10:36:18'!
 retrocederElHabitatAlInicioDeLosTiempos
-	HabitatDeAvispas eliminarHuevos.
-	HabitatDeAvispas eliminarOrugas.
-	HabitatDeAvispas eliminarPolillas.! !
+	HabitatDeAvispas huevosAlInicioDeLosTiempos.
+	HabitatDeAvispas orugasAlInicioDeLosTiempos.
+	HabitatDeAvispas polillasAlInicioDeLosTiempos.! !
 
 HabitatDeAvispas initializeAfterFileIn!
