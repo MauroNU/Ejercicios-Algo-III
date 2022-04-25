@@ -98,6 +98,10 @@ DenotativeObject subclass: #HabitatDeAvispas
 HabitatDeAvispas class
 	instanceVariableNames: 'cantidadDeOrugas cantidadDeHuevosDeAvispaOmega cantidadDeHuevosDeAvispaPi cantidadDeHuevosDeAvispaLambda cantidadDePolillas'!
 
+!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/22/2022 12:52:09'!
+agregarUnHuevoDeAvispa
+	cantidadDeHuevosDeAvispa := cantidadDeHuevosDeAvispa + 1.! !
+
 !HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/23/2022 13:41:55'!
 agregarUnHuevoDeAvispaOmega
 	cantidadDeHuevosDeAvispaOmega := cantidadDeHuevosDeAvispaOmega + 1.! !
@@ -150,10 +154,11 @@ cantidadDePolillas
 	^cantidadDePolillas.
 	! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/23/2022 13:48:02'!
+!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/25/2022 09:36:35'!
 eliminarHuevos
 	cantidadDeHuevosDeAvispaOmega := 0.
-	cantidadDeHuevosDeAvispaPi := 0.! !
+	cantidadDeHuevosDeAvispaPi := 0.
+	cantidadDeHuevosDeAvispaLambda := 0.! !
 
 !HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/21/2022 20:22:30'!
 eliminarOrugas
@@ -172,14 +177,14 @@ quitarUnaPolilla
 	cantidadDePolillas := cantidadDePolillas - 1.! !
 
 
-!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'BS 4/23/2022 14:56:43'!
+!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'MU 4/25/2022 09:40:16'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
 	cantidadDeOrugas := 0.
 	cantidadDeHuevosDeAvispaOmega := 0.
 	cantidadDeHuevosDeAvispaPi := 0.
-	cantidadDeHuevosDeAvispaLambda := nil.
+	cantidadDeHuevosDeAvispaLambda := 0.
 	cantidadDePolillas := 0.! !
 
 
@@ -390,9 +395,9 @@ test21CuandoLaraLaAvispaNoTieneRecursosNoDejaUnHuevo
 	Assert that: self cantidadDeHuevosConLaFirmaGeneticaDeLara isEqualTo: 0.! !
 
 
-!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'BS 4/23/2022 14:36:05'!
+!PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'MU 4/25/2022 09:37:33'!
 cantidadDeHuevosConLaFirmaGeneticaDeLara
-	HabitatDeAvispas cantidadDeHuevosDeAvispaLambda.! !
+	^ HabitatDeAvispas cantidadDeHuevosDeAvispaLambda.! !
 
 !PruebasReproduccionDeAvispas class methodsFor: 'Para completar' stamp: 'BS 4/23/2022 13:49:35'!
 cantidadDeHuevosConLaFirmaGeneticaDeOriana
