@@ -98,86 +98,102 @@ DenotativeObject subclass: #HabitatDeAvispas
 HabitatDeAvispas class
 	instanceVariableNames: 'cantidadDeOrugas cantidadDeHuevosDeAvispaOmega cantidadDeHuevosDeAvispaPi cantidadDeHuevosDeAvispaLambda cantidadDePolillas'!
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/22/2022 12:52:09'!
-agregarUnHuevoDeAvispa
-	cantidadDeHuevosDeAvispa := cantidadDeHuevosDeAvispa + 1.! !
-
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/23/2022 13:41:55'!
-agregarUnHuevoDeAvispaOmega
-	cantidadDeHuevosDeAvispaOmega := cantidadDeHuevosDeAvispaOmega + 1.! !
-
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/23/2022 13:42:04'!
-agregarUnHuevoDeAvispaPi
-	cantidadDeHuevosDeAvispaPi := cantidadDeHuevosDeAvispaPi + 1.! !
-
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/22/2022 12:40:19'!
-agregarUnaOruga
-	cantidadDeOrugas := cantidadDeOrugas + 1.! !
-
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/22/2022 12:31:45'!
-agregarUnaPolilla
-	cantidadDePolillas := cantidadDePolillas + 1.! !
-
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/23/2022 14:52:28'!
-cambiarLineaGeneticaDeOmegaALambda
-	cantidadDeHuevosDeAvispaLambda := cantidadDeHuevosDeAvispaLambda + 1.
-	cantidadDeHuevosDeAvispaOmega := cantidadDeHuevosDeAvispaOmega - 1.! !
-
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/23/2022 14:52:42'!
-cambiarLineaGeneticaDePiALambda
-	cantidadDeHuevosDeAvispaLambda := cantidadDeHuevosDeAvispaLambda + 1.
-	cantidadDeHuevosDeAvispaPi := cantidadDeHuevosDeAvispaPi - 1.! !
-
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/23/2022 14:29:45'!
+!HabitatDeAvispas class methodsFor: 'publico' stamp: 'BS 4/23/2022 14:29:45'!
 cantidadDeHuevosDeAvispaLambda
 	^cantidadDeHuevosDeAvispaLambda ! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/23/2022 13:43:40'!
+!HabitatDeAvispas class methodsFor: 'publico' stamp: 'BS 4/23/2022 13:43:40'!
 cantidadDeHuevosDeAvispaOmega
 	^cantidadDeHuevosDeAvispaOmega! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/23/2022 13:43:47'!
+!HabitatDeAvispas class methodsFor: 'publico' stamp: 'BS 4/23/2022 13:43:47'!
 cantidadDeHuevosDeAvispaPi
 	^cantidadDeHuevosDeAvispaPi! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/23/2022 13:47:01'!
+!HabitatDeAvispas class methodsFor: 'publico' stamp: 'BS 4/23/2022 13:47:01'!
 cantidadDeHuevosDeAvispas	| cantidadTotalDeHuevosDeAvispa |.
 	cantidadTotalDeHuevosDeAvispa := cantidadDeHuevosDeAvispaOmega + cantidadDeHuevosDeAvispaPi.
 	^cantidadTotalDeHuevosDeAvispa ! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/21/2022 20:23:05'!
+!HabitatDeAvispas class methodsFor: 'publico' stamp: 'BS 4/21/2022 20:23:05'!
 cantidadDeOrugas
 	^cantidadDeOrugas ! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/22/2022 12:37:41'!
+!HabitatDeAvispas class methodsFor: 'publico' stamp: 'MU 4/22/2022 12:37:41'!
 cantidadDePolillas
 	^cantidadDePolillas.
 	! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/25/2022 10:35:38'!
+
+!HabitatDeAvispas class methodsFor: 'manejoDeRecursos' stamp: 'MU 4/22/2022 12:40:19'!
+agregarUnaOruga
+	cantidadDeOrugas := cantidadDeOrugas + 1.! !
+
+!HabitatDeAvispas class methodsFor: 'manejoDeRecursos' stamp: 'MU 4/22/2022 12:31:45'!
+agregarUnaPolilla
+	cantidadDePolillas := cantidadDePolillas + 1.! !
+
+!HabitatDeAvispas class methodsFor: 'manejoDeRecursos' stamp: 'BS 4/23/2022 13:48:02'!
+eliminarHuevos
+	cantidadDeHuevosDeAvispaOmega := 0.
+	cantidadDeHuevosDeAvispaPi := 0.! !
+
+!HabitatDeAvispas class methodsFor: 'manejoDeRecursos' stamp: 'BS 4/21/2022 20:22:30'!
+eliminarOrugas
+	cantidadDeOrugas := 0.! !
+
+!HabitatDeAvispas class methodsFor: 'manejoDeRecursos' stamp: 'MU 4/22/2022 12:32:42'!
+eliminarPolillas
+	cantidadDePolillas := 0.! !
+
+!HabitatDeAvispas class methodsFor: 'manejoDeRecursos' stamp: 'BS 4/21/2022 20:21:12'!
+quitarUnaOruga
+	cantidadDeOrugas := cantidadDeOrugas - 1.! !
+
+!HabitatDeAvispas class methodsFor: 'manejoDeRecursos' stamp: 'MU 4/22/2022 12:35:41'!
+quitarUnaPolilla
+	cantidadDePolillas := cantidadDePolillas - 1.! !
+
+
+!HabitatDeAvispas class methodsFor: 'procreacion' stamp: 'MU 4/22/2022 12:52:09'!
+agregarUnHuevoDeAvispa
+	cantidadDeHuevosDeAvispa := cantidadDeHuevosDeAvispa + 1.! !
+
+!HabitatDeAvispas class methodsFor: 'procreacion' stamp: 'BS 4/23/2022 13:41:55'!
+agregarUnHuevoDeAvispaOmega
+	cantidadDeHuevosDeAvispaOmega := cantidadDeHuevosDeAvispaOmega + 1.! !
+
+!HabitatDeAvispas class methodsFor: 'procreacion' stamp: 'BS 4/23/2022 13:42:04'!
+agregarUnHuevoDeAvispaPi
+	cantidadDeHuevosDeAvispaPi := cantidadDeHuevosDeAvispaPi + 1.! !
+
+!HabitatDeAvispas class methodsFor: 'procreacion' stamp: 'BS 4/23/2022 14:52:28'!
+cambiarLineaGeneticaDeOmegaALambda
+	cantidadDeHuevosDeAvispaLambda := cantidadDeHuevosDeAvispaLambda + 1.
+	cantidadDeHuevosDeAvispaOmega := cantidadDeHuevosDeAvispaOmega - 1.! !
+
+!HabitatDeAvispas class methodsFor: 'procreacion' stamp: 'BS 4/23/2022 14:52:42'!
+cambiarLineaGeneticaDePiALambda
+	cantidadDeHuevosDeAvispaLambda := cantidadDeHuevosDeAvispaLambda + 1.
+	cantidadDeHuevosDeAvispaPi := cantidadDeHuevosDeAvispaPi - 1.! !
+
+
+!HabitatDeAvispas class methodsFor: 'inicioDeLosTiempos' stamp: 'MU 4/25/2022 10:35:38'!
 huevosAlInicioDeLosTiempos
 	cantidadDeHuevosDeAvispaOmega := 0.
 	cantidadDeHuevosDeAvispaPi := 0.
 	cantidadDeHuevosDeAvispaLambda := 0.! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/25/2022 10:36:02'!
+!HabitatDeAvispas class methodsFor: 'inicioDeLosTiempos' stamp: 'MU 4/25/2022 10:36:02'!
 orugasAlInicioDeLosTiempos
 	cantidadDeOrugas := 0.! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/25/2022 10:36:18'!
+!HabitatDeAvispas class methodsFor: 'inicioDeLosTiempos' stamp: 'MU 4/25/2022 10:36:18'!
 polillasAlInicioDeLosTiempos
 	cantidadDePolillas := 0.! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'BS 4/21/2022 20:21:12'!
-quitarUnaOruga
-	cantidadDeOrugas := cantidadDeOrugas - 1.! !
 
-!HabitatDeAvispas class methodsFor: 'as yet unclassified' stamp: 'MU 4/22/2022 12:35:41'!
-quitarUnaPolilla
-	cantidadDePolillas := cantidadDePolillas - 1.! !
-
-
-!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'MU 4/25/2022 10:36:45'!
+!HabitatDeAvispas class methodsFor: '--** private fileout/in **--' stamp: 'BS 4/25/2022 18:33:23'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
