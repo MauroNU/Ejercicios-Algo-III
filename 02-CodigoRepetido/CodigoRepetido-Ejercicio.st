@@ -21,51 +21,50 @@ TestCase subclass: #CustomerBookTest
 	poolDictionaries: ''
 	category: 'CodigoRepetido-Ejercicio'!
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'NR 4/3/2019 10:50:19'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'MU 5/1/2022 20:26:12'!
 test01AddingCustomerShouldNotTakeMoreThan50Milliseconds
 
-	| customerBook millisecondsBeforeRunning millisecondsAfterRunning |
+	| customerBook johnLennon |
 	
 	customerBook := CustomerBook new.
 	
-	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
-	customerBook addCustomerNamed: 'John Lennon'.
-	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
+	johnLennon := 'John Lennon'.
 	
-	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (50 * millisecond)
+	self assert: (customerBook timeTakenToAddACustomerNamed: johnLennon) < (50 * millisecond)
 	
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'NR 4/3/2019 10:50:13'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'MU 5/1/2022 20:24:42'!
 test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
-	| customerBook millisecondsBeforeRunning millisecondsAfterRunning paulMcCartney |
+	| customerBook paulMcCartney |
 	
 	customerBook := CustomerBook new.
+	
 	paulMcCartney := 'Paul McCartney'.
 	
 	customerBook addCustomerNamed: paulMcCartney.
-	  
-	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
-	customerBook removeCustomerNamed: paulMcCartney.
-	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
 	
-	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (100 * millisecond)
-	
+	self assert: (customerBook timeTakenToRemoveACustomerNamed: paulMcCartney) < (100 * millisecond)
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'HernanWilkinson 5/9/2012 18:12'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'MU 5/1/2022 20:25:20'!
 test03CanNotAddACustomerWithEmptyName 
 
 	| customerBook |
-			
+	
 	customerBook := CustomerBook new.
-
+	
 	[ customerBook addCustomerNamed: ''.
+		
 	self fail ]
+
 		on: Error 
+		
 		do: [ :anError | 
+			
 			self assert: anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.
+			
 			self assert: customerBook isEmpty ]! !
 
 !CustomerBookTest methodsFor: 'testing' stamp: 'HAW 8/28/2017 08:57:25'!
@@ -174,13 +173,38 @@ includesCustomerNamed: aName
 
 	^(active includes: aName) or: [ suspended includes: aName ]! !
 
-!CustomerBook methodsFor: 'testing' stamp: 'NR 4/3/2019 10:14:26'!
+!CustomerBook methodsFor: 'testing' stamp: 'MU 5/1/2022 19:47:59'!
 isEmpty
-	
 	^active isEmpty and: [ suspended isEmpty ]! !
 
+!CustomerBook methodsFor: 'testing' stamp: 'MU 5/1/2022 20:21:59'!
+timeTakenToAddACustomerNamed: aName
+	
+	| millisecondsBeforeRunning millisecondsAfterRunning |
+	
+	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
+	
+	self addCustomerNamed: aName.
+	
+	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
+	
+	^(millisecondsAfterRunning - millisecondsBeforeRunning )! !
 
-!CustomerBook methodsFor: 'initialization' stamp: 'NR 4/3/2019 10:14:26'!
+!CustomerBook methodsFor: 'testing' stamp: 'MU 5/1/2022 20:23:55'!
+timeTakenToRemoveACustomerNamed: aName
+	
+	| millisecondsBeforeRunning millisecondsAfterRunning |
+	
+	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
+	
+	self removeCustomerNamed: aName.
+	
+	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
+	
+	^(millisecondsAfterRunning - millisecondsBeforeRunning )! !
+
+
+!CustomerBook methodsFor: 'initialization' stamp: 'MU 5/1/2022 20:08:57'!
 initialize
 
 	super initialize.
@@ -188,19 +212,29 @@ initialize
 	suspended:= OrderedCollection new.! !
 
 
+!CustomerBook methodsFor: 'error signals' stamp: 'MU 4/30/2022 16:37:34'!
+signalCustomerAlreadyExists 
+	self error: self class customerAlreadyExistsErrorMessage! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'MU 4/30/2022 16:06:19'!
+!CustomerBook methodsFor: 'error signals' stamp: 'MU 4/30/2022 16:37:38'!
+signalCustomerNameCannotBeEmpty 
+	self error: self class customerCanNotBeEmptyErrorMessage ! !
+
+
+!CustomerBook methodsFor: 'customer management' stamp: 'MU 5/1/2022 20:17:09'!
 addCustomerNamed: aName
 
 	aName isEmpty ifTrue: [ self signalCustomerNameCannotBeEmpty ].
 	
 	(self includesCustomerNamed: aName) ifTrue: [ self signalCustomerAlreadyExists ].
 	
-	active add: aName ! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'NR 4/3/2019 10:14:26'!
-numberOfActiveCustomers
+	active add: aName
 	
+	
+! !
+
+!CustomerBook methodsFor: 'customer management' stamp: 'MU 5/1/2022 20:06:19'!
+numberOfActiveCustomers
 	^active size! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'MU 4/30/2022 16:37:12'!
@@ -219,23 +253,15 @@ removeCustomerNamed: aName
 	
 ! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'MU 4/30/2022 16:37:34'!
-signalCustomerAlreadyExists 
-	self error: self class customerAlreadyExistsErrorMessage! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'MU 4/30/2022 16:37:38'!
-signalCustomerNameCannotBeEmpty 
-	self error: self class customerCanNotBeEmptyErrorMessage ! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'MU 4/30/2022 16:37:56'!
+!CustomerBook methodsFor: 'customer management' stamp: 'MU 5/1/2022 19:56:10'!
 suspendCustomerNamed: aName 
 
-	(active includes: aName) ifFalse: [^CantSuspend signal].
+	active remove: aName ifAbsent: [
+		^CantSuspend signal].
 	
-	active remove: aName.
+	suspended add: aName.
 	
-	suspended add: aName
-! !
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
