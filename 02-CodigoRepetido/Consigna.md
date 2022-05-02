@@ -15,7 +15,7 @@ Aclaración: Para hacer este ejercicio más sencillo se modela a un Customer uti
 
 En los test 01 y 02 hay código repetido. Cuando lo extrajeron crearon algo nuevo. Eso es algo que estaba en la realidad y no estaba representado en nuestro código, por eso teníamos código repetido. ¿Cuál es esa entidad de la realidad que crearon? 
 
-Creamos una especie de cronómetro. No se fue hecha una abstracción "Cronómetro" como tal, pero su funcionalidad es la de uno, encargándose de medir el tiempo tardado en agregar un "customer" al "customerBook".
+Creamos un cronómetro. Consideramos que debía abstraerse el hecho de tomar tiempos a una entidad que se encargue de dicha función.
 
 
 ## Cómo representar en Smalltalk
