@@ -141,6 +141,22 @@ trySuspendingCustomerNamed: aName from: aCustomerBook
 ! !
 
 
+!classDefinition: #Chronometer category: 'CodigoRepetido-Ejercicio'!
+Object subclass: #Chronometer
+	instanceVariableNames: 'startTime'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'CodigoRepetido-Ejercicio'!
+
+!Chronometer methodsFor: 'as yet unclassified' stamp: 'BS 5/2/2022 10:06:58'!
+start
+	 startTime := Time millisecondClockValue * millisecond.! !
+
+!Chronometer methodsFor: 'as yet unclassified' stamp: 'BS 5/2/2022 10:08:52'!
+timePassedSinceStart
+	^(Time millisecondClockValue * millisecond) - startTime.! !
+
+
 !classDefinition: #CustomerBook category: 'CodigoRepetido-Ejercicio'!
 Object subclass: #CustomerBook
 	instanceVariableNames: 'suspended active'
@@ -162,31 +178,30 @@ includesCustomerNamed: aName
 isEmpty
 	^active isEmpty and: [ suspended isEmpty ]! !
 
-!CustomerBook methodsFor: 'testing' stamp: 'MU 5/1/2022 20:21:59'!
+!CustomerBook methodsFor: 'testing' stamp: 'BS 5/2/2022 10:11:18'!
 timeTakenToAddACustomerNamed: aName
 	
-	| millisecondsBeforeRunning millisecondsAfterRunning |
+	| chronometer |
 	
-	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
+	chronometer := Chronometer new.
+	chronometer start.
 	
 	self addCustomerNamed: aName.
 	
-	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
-	
-	^(millisecondsAfterRunning - millisecondsBeforeRunning )! !
+	^chronometer timePassedSinceStart.
+	! !
 
-!CustomerBook methodsFor: 'testing' stamp: 'MU 5/1/2022 20:23:55'!
+!CustomerBook methodsFor: 'testing' stamp: 'BS 5/2/2022 10:13:02'!
 timeTakenToRemoveACustomerNamed: aName
+	| chronometer |
 	
-	| millisecondsBeforeRunning millisecondsAfterRunning |
-	
-	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
+	chronometer := Chronometer new.
+	chronometer start.
 	
 	self removeCustomerNamed: aName.
 	
-	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
-	
-	^(millisecondsAfterRunning - millisecondsBeforeRunning )! !
+	^chronometer timePassedSinceStart.
+	! !
 
 
 !CustomerBook methodsFor: 'initialization' stamp: 'MU 5/1/2022 20:08:57'!
