@@ -342,12 +342,36 @@ invalidNumberType
 	self error: self class invalidNumberTypeErrorDescription! !
 
 
-!Numero methodsFor: 'as yet unclassified' stamp: 'BS 5/5/2022 21:04:34'!
+!Numero methodsFor: 'as yet unclassified' stamp: 'MU 5/6/2022 14:46:11'!
 beingAddedToFraction: anAugend
-	^self subclassResponsibility.! !
+	self subclassResponsibility.! !
 
 !Numero methodsFor: 'as yet unclassified' stamp: 'BS 5/5/2022 20:34:13'!
 beingAddedToInteger: anInteger
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'as yet unclassified' stamp: 'MU 5/6/2022 14:58:19'!
+beingMultipliedByFraction: aFraction
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'as yet unclassified' stamp: 'MU 5/6/2022 14:46:43'!
+beingMultipliedByInteger: anInteger
+	self subclassResponsibility. ! !
+
+!Numero methodsFor: 'as yet unclassified' stamp: 'MU 5/6/2022 15:37:13'!
+dividesFraction: aFraction
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'as yet unclassified' stamp: 'MU 5/6/2022 15:32:44'!
+dividesInteger: anInteger
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'as yet unclassified' stamp: 'MU 5/6/2022 15:51:08'!
+substractsFraction: aFraction
+	self subclassResponsibility.! !
+
+!Numero methodsFor: 'as yet unclassified' stamp: 'MU 5/6/2022 15:50:49'!
+substractsInteger: anInteger
 	self subclassResponsibility.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -373,10 +397,9 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'MU 5/6/2022 14:54:35'!
 * aMultiplier 
-	
-	^self class with: value * aMultiplier integerValue
+	^aMultiplier beingMultipliedByInteger: self.
 	! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'BS 5/5/2022 20:56:01'!
@@ -385,15 +408,15 @@ Numero subclass: #Entero
 	^ anAdder beingAddedToInteger: self.
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:40:37'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'MU 5/6/2022 15:52:16'!
 - aSubtrahend 
-	
-	^ self class with: value - aSubtrahend integerValue.! !
+	^aSubtrahend substractsInteger: self.
+	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'MU 5/6/2022 15:32:44'!
 / aDivisor 
 	
-	^Fraccion with: self over: aDivisor! !
+	^aDivisor dividesInteger: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -470,10 +493,41 @@ beingAddedToFraction: anAugend
 beingAddedToInteger: anAugend
 	^self class with: anAugend integerValue + value.! !
 
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'MU 5/6/2022 15:01:54'!
+beingMultipliedByFraction: aFraction
+	^(self * aFraction numerator) / (aFraction denominator)! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'MU 5/6/2022 14:53:47'!
+beingMultipliedByInteger: anInteger
+	^self class with: (value * anInteger integerValue).
+	! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'MU 5/6/2022 15:46:59'!
+dividesFraction: aFraction
+	^((aFraction numerator) / (aFraction denominator * self)).! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'MU 5/6/2022 16:27:16'!
+dividesInteger: anInteger
+	^(Fraccion with: anInteger over: self).! !
+
 !Entero methodsFor: 'arithmetic operations - private' stamp: 'HernanWilkinson 5/7/2016 21:00'!
 greatestCommonDivisorWith: anEntero 
 	
 	^self class with: (value gcd: anEntero integerValue)! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'MU 5/6/2022 16:40:36'!
+substractsFraction: aFraction
+	| newNumerator newDenominator |
+	
+	newNumerator := (aFraction numerator) - (self * aFraction denominator).
+	newDenominator := aFraction denominator.
+	
+	^newNumerator / newDenominator ! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'MU 5/6/2022 15:59:33'!
+substractsInteger: anInteger
+	^anInteger class with: (anInteger integerValue - value).
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -501,24 +555,10 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic-private' stamp: 'BS 5/5/2022 21:03:20'!
-beingAddedToFraction: anAugend
-	| newNumerator newDenominator |
-	
-	newNumerator := (numerator * anAugend denominator) + (denominator * anAugend numerator).
-	newDenominator := denominator * anAugend denominator.
-	
-	^newNumerator / newDenominator ! !
-
-!Fraccion methodsFor: 'arithmetic-private' stamp: 'BS 5/5/2022 21:00:55'!
-beingAddedToInteger: anInteger
-	^((anInteger * self denominator)+self numerator) / self denominator.! !
-
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MU 5/6/2022 14:56:24'!
 * aMultiplier 
 	
-	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
+	^aMultiplier beingMultipliedByFraction: self.
 	! !
 
 !Fraccion methodsFor: 'arithmetic operations' stamp: 'BS 5/5/2022 21:24:57'!
@@ -526,21 +566,16 @@ beingAddedToInteger: anInteger
 	
 	^anAdder beingAddedToFraction: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:43:50'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MU 5/6/2022 16:02:52'!
 - aSubtrahend 
 	
-	| newNumerator newDenominator |
-	
-	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
-	newDenominator := denominator * aSubtrahend denominator.
-	
-	^newNumerator / newDenominator 
+	^aSubtrahend substractsFraction: self.
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'MU 5/6/2022 15:37:13'!
 / aDivisor 
 	
-	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
+	^aDivisor dividesFraction: self.! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -599,6 +634,62 @@ printOn: aStream
 		print: numerator;
 		nextPut: $/;
 		print: denominator ! !
+
+
+!Fraccion methodsFor: 'arithmetic-private' stamp: 'BS 5/5/2022 21:03:20'!
+beingAddedToFraction: anAugend
+	| newNumerator newDenominator |
+	
+	newNumerator := (numerator * anAugend denominator) + (denominator * anAugend numerator).
+	newDenominator := denominator * anAugend denominator.
+	
+	^newNumerator / newDenominator ! !
+
+!Fraccion methodsFor: 'arithmetic-private' stamp: 'BS 5/5/2022 21:00:55'!
+beingAddedToInteger: anInteger
+	^((anInteger * self denominator)+self numerator) / self denominator.! !
+
+!Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/6/2022 14:57:35'!
+beingMultipliedByFraction: aFraction
+	^(numerator * aFraction numerator) / (denominator * aFraction denominator)
+	! !
+
+!Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/6/2022 15:01:00'!
+beingMultipliedByInteger: anInteger
+	^(anInteger * self numerator) / (self denominator)
+	! !
+
+!Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/6/2022 15:41:50'!
+dividesFraction: aFraction
+	| auxFraction |
+	auxFraction := (self denominator) / (self numerator).
+	
+	^(auxFraction * aFraction).
+	
+	"(numerator * aDivisor denominator) / (denominator * aDivisor numerator)"! !
+
+!Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/6/2022 15:35:41'!
+dividesInteger: anInteger
+	^((self denominator * anInteger) / (self numerator)).
+	! !
+
+!Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/6/2022 16:04:18'!
+substractsFraction: aFraction
+	| newNumerator newDenominator |
+	
+	newNumerator := (aFraction numerator * self denominator) - (aFraction denominator * self numerator).
+	newDenominator := aFraction denominator * self denominator.
+	
+	^newNumerator / newDenominator ! !
+
+!Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/6/2022 16:38:03'!
+substractsInteger: anInteger
+	| newNumerator newDenominator |
+	
+	newNumerator := (anInteger * self denominator) - (self numerator).
+	newDenominator := self denominator.
+	
+	^newNumerator / newDenominator ! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
