@@ -366,6 +366,11 @@ dividesFraction: aFraction
 dividesInteger: anInteger
 	self subclassResponsibility.! !
 
+!Numero methodsFor: 'as yet unclassified' stamp: 'MU 5/7/2022 13:04:25'!
+initializeWith: aNumerator over: aDenominator
+
+	self subclassResponsibility.! !
+
 !Numero methodsFor: 'as yet unclassified' stamp: 'MU 5/6/2022 15:51:08'!
 substractsFraction: aFraction
 	self subclassResponsibility.! !
@@ -402,9 +407,8 @@ Numero subclass: #Entero
 	^aMultiplier beingMultipliedByInteger: self.
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'BS 5/5/2022 20:56:01'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'MU 5/7/2022 15:52:13'!
 + anAdder 
-	
 	^ anAdder beingAddedToInteger: self.
 ! !
 
@@ -418,18 +422,10 @@ Numero subclass: #Entero
 	
 	^aDivisor dividesInteger: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'MU 5/7/2022 12:47:51'!
 fibonacci
-
-	| one two |
+	self subclassResponsibility.
 	
-	one := Entero with: 1.
-	two := Entero with: 2.
-	
-	self isNegative ifTrue: [self error: Entero negativeFibonacciErrorDescription ].	
-	(self isZero or: [self isOne]) ifTrue: [^one].
-	
-	^ (self - one) fibonacci + (self - two) fibonacci
 		! !
 
 
@@ -443,6 +439,14 @@ hash
 
 	^value hash! !
 
+
+!Entero methodsFor: 'initialization' stamp: 'MU 5/7/2022 16:22:37'!
+ifOneThrowError
+	self.! !
+
+!Entero methodsFor: 'initialization' stamp: 'MU 5/7/2022 16:22:13'!
+ifZeroThrowError
+	self.! !
 
 !Entero methodsFor: 'initialization' stamp: 'JS 5/5/2022 03:55:37'!
 initializeWith: aValue 
@@ -485,9 +489,9 @@ isZero
 	
 	^self class with: value // aDivisor integerValue! !
 
-!Entero methodsFor: 'arithmetic operations - private' stamp: 'BS 5/5/2022 21:14:09'!
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'MU 5/7/2022 15:54:14'!
 beingAddedToFraction: anAugend
-	^(((self * anAugend denominator)+anAugend numerator) / anAugend denominator).! !
+	^((self * anAugend denominator+anAugend numerator) / anAugend denominator).! !
 
 !Entero methodsFor: 'arithmetic operations - private' stamp: 'BS 5/5/2022 20:54:47'!
 beingAddedToInteger: anAugend
@@ -539,13 +543,80 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'JS 5/5/2022 03:55:37'!
+!Entero class methodsFor: 'instance creation' stamp: 'MU 5/7/2022 15:49:04'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
+	
 	aValue isInteger ifFalse: [  self error: 'aValue debe ser anInteger' ].
+	aValue isZero ifTrue: [ ^Cero new initializeWith: aValue].
+	aValue = 1 ifTrue: [ ^Uno new initializeWith: aValue].
+	aValue negative ifTrue: [ ^Negativo new initializeWith: aValue].
+	aValue positive ifTrue: [ ^Natural new initializeWith: aValue].
 	
 	^self new initializeWith: aValue! !
+
+
+!classDefinition: #Cero category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #Cero
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!Cero methodsFor: 'as yet unclassified' stamp: 'MU 5/7/2022 15:18:29'!
+fibonacci
+	^(Entero with: 1).! !
+
+!Cero methodsFor: 'as yet unclassified' stamp: 'MU 5/7/2022 16:17:05'!
+ifZeroThrowError
+	^self error: 'una fraccion no puede ser cero'.! !
+
+
+!classDefinition: #Natural category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #Natural
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!Natural methodsFor: 'as yet unclassified' stamp: 'MU 5/7/2022 14:12:06'!
+fibonacci
+
+	| one two |
+	
+	one := Natural with: 1.
+	two := Natural with: 2.
+	
+	^ (self - one) fibonacci + (self - two) fibonacci! !
+
+
+!classDefinition: #Negativo category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #Negativo
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!Negativo methodsFor: 'as yet unclassified' stamp: 'MU 5/7/2022 16:04:23'!
+fibonacci
+	^self error: Entero negativeFibonacciErrorDescription.! !
+
+
+!classDefinition: #Uno category: 'Numeros-Parte2-Ejercicio'!
+Entero subclass: #Uno
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Numeros-Parte2-Ejercicio'!
+
+!Uno methodsFor: 'as yet unclassified' stamp: 'MU 5/7/2022 15:18:55'!
+fibonacci
+	^(Entero with: 1).! !
+
+!Uno methodsFor: 'as yet unclassified' stamp: 'MU 5/7/2022 16:17:20'!
+ifOneThrowError
+	^self error: 'una fraccion no puede tener denominador 1 porque sino es un entero'.! !
 
 
 !classDefinition: #Fraccion category: 'Numeros-Parte2-Ejercicio'!
@@ -600,15 +671,17 @@ numerator
 	^ numerator! !
 
 
-!Fraccion methodsFor: 'initialization' stamp: 'HernanWilkinson 5/7/2016 22:54'!
+!Fraccion methodsFor: 'initialization' stamp: 'MU 5/7/2022 16:17:51'!
 initializeWith: aNumerator over: aDenominator
 
 	"Estas precondiciones estan por si se comenten errores en la implementacion - Hernan"
-	aNumerator isZero ifTrue: [ self error: 'una fraccion no puede ser cero' ].
-	aDenominator isOne ifTrue: [ self error: 'una fraccion no puede tener denominador 1 porque sino es un entero' ].
+
+	aNumerator ifZeroThrowError.
+	aDenominator ifOneThrowError.
 	
 	numerator := aNumerator.
-	denominator := aDenominator ! !
+	denominator := aDenominator.
+! !
 
 
 !Fraccion methodsFor: 'testing' stamp: 'NR 9/23/2018 23:41:38'!
@@ -645,28 +718,26 @@ beingAddedToFraction: anAugend
 	
 	^newNumerator / newDenominator ! !
 
-!Fraccion methodsFor: 'arithmetic-private' stamp: 'BS 5/5/2022 21:00:55'!
+!Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/7/2022 15:53:31'!
 beingAddedToInteger: anInteger
-	^((anInteger * self denominator)+self numerator) / self denominator.! !
+	^anInteger beingAddedToFraction: self.! !
 
 !Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/6/2022 14:57:35'!
 beingMultipliedByFraction: aFraction
 	^(numerator * aFraction numerator) / (denominator * aFraction denominator)
 	! !
 
-!Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/6/2022 15:01:00'!
+!Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/7/2022 15:54:59'!
 beingMultipliedByInteger: anInteger
-	^(anInteger * self numerator) / (self denominator)
+	^anInteger beingMultipliedByFraction: self.
 	! !
 
-!Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/6/2022 15:41:50'!
+!Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/7/2022 15:55:47'!
 dividesFraction: aFraction
 	| auxFraction |
 	auxFraction := (self denominator) / (self numerator).
-	
 	^(auxFraction * aFraction).
-	
-	"(numerator * aDivisor denominator) / (denominator * aDivisor numerator)"! !
+	! !
 
 !Fraccion methodsFor: 'arithmetic-private' stamp: 'MU 5/6/2022 15:35:41'!
 dividesInteger: anInteger
