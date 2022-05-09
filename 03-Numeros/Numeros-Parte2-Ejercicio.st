@@ -543,7 +543,7 @@ Entero class
 negativeFibonacciErrorDescription
 	^ ' Fibonacci no está definido aquí para Enteros Negativos'! !
 
-!Entero class methodsFor: 'instance creation' stamp: 'MU 5/7/2022 15:49:04'!
+!Entero class methodsFor: 'instance creation' stamp: 'MU 5/9/2022 20:03:17'!
 with: aValue 
 	
 	"Esta verificacion esta puesta por si se equivocan y quieren crear un Entero pasando otra cosa que un Integer - Hernan"
@@ -552,9 +552,7 @@ with: aValue
 	aValue isZero ifTrue: [ ^Cero new initializeWith: aValue].
 	aValue = 1 ifTrue: [ ^Uno new initializeWith: aValue].
 	aValue negative ifTrue: [ ^Negativo new initializeWith: aValue].
-	aValue positive ifTrue: [ ^Natural new initializeWith: aValue].
-	
-	^self new initializeWith: aValue! !
+	aValue positive ifTrue: [ ^Natural new initializeWith: aValue].! !
 
 
 !classDefinition: #Cero category: 'Numeros-Parte2-Ejercicio'!
