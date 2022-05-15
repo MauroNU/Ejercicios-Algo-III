@@ -1,4 +1,4 @@
-!classDefinition: #OOStackTest category: #'Stack-Exercise'!
+!classDefinition: #OOStackTest category: 'Stack-Exercise'!
 TestCase subclass: #OOStackTest
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -91,7 +91,7 @@ test07TopDoesNotRemoveObjectFromStack
 	self assert: stack size = 1.
 	! !
 
-!OOStackTest methodsFor: 'test' stamp: 'HAW 4/14/2017 22:48:26'!
+!OOStackTest methodsFor: 'test' stamp: 'MU 5/15/2022 00:58:07'!
 test08CanNotPopWhenThereAreNoObjectsInTheStack
 
 	| stack  |
@@ -102,7 +102,6 @@ test08CanNotPopWhenThereAreNoObjectsInTheStack
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = OOStack stackEmptyErrorDescription ]
-		
 ! !
 
 !OOStackTest methodsFor: 'test' stamp: 'NR 5/13/2020 13:30:31'!
@@ -137,36 +136,204 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 ! !
 
 
-!classDefinition: #SentenceFinderByPrefixTest category: #'Stack-Exercise'!
+!classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 15:02:46'!
+test01SearchingForAPrefixInAnEmptyStackReturnsACollectionOfZeroElements
+	| stack finder |
+	
+	stack := OOStack new.
+	finder := SentenceFinderByPrefix new.
+	
+	self assert: ((finder find: 'wint' in: stack) size = 0).
+
+	! !
+
+!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 14:57:51'!
+test0xPushManyStringsAndObtainTheOnesWithThePrefix
+	| stack finder collection secondCollection |
+	
+	stack := OOStack new.
+	finder := SentenceFinderByPrefix new.
+	collection := OrderedCollection new.
+	
+	stack push: 'winter is coming'.
+	stack push: 'winning is everything'.
+	stack push: 'I like potatoes.'.
+	stack push: 'Winter is here'.
+	stack push: 'Ash is the worst pokemon trainer of all'.
+	
+	collection add: 'Winter is here'.
+		
+	secondCollection := finder find: 'Wint' in: stack.
+	
+	self assert: (collection = secondCollection).! !
+
 
-!classDefinition: #OOStack category: #'Stack-Exercise'!
+!classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
+	instanceVariableNames: 'state'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:54:37'!
+initialize
+	state := NullStack new.
+	
+	! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:54:55'!
+isEmpty
+	^state isEmpty.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 00:45:17'!
+pop
+	|elementRemoved|
+	
+	elementRemoved := state pop.
+	state size = 0 ifTrue:[state := NullStack new.].
+	
+	^elementRemoved.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 00:09:54'!
+push: elementToPush
+	
+	state := state push:elementToPush.
+	! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:56:39'!
+size
+	^state size.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:56:48'!
+top
+	^state top.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'OOStack class' category: 'Stack-Exercise'!
+OOStack class
+	instanceVariableNames: ''!
+
+!OOStack class methodsFor: 'error descriptions' stamp: 'MU 5/15/2022 00:55:07'!
+stackEmptyErrorDescription
+	
+	^ 'Stack is empty'.! !
+
+
+!classDefinition: #OOStackState category: 'Stack-Exercise'!
+Object subclass: #OOStackState
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+!OOStackState methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 12:19:52'!
+isEmpty
+	self subclassResponsibility.! !
 
-!classDefinition: 'OOStack class' category: #'Stack-Exercise'!
-OOStack class
-	instanceVariableNames: ''!
+!OOStackState methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 12:19:58'!
+pop
+	self subclassResponsibility.! !
 
-!OOStack class methodsFor: 'error descriptions' stamp: 'HernanWilkinson 5/7/2012 11:51'!
-stackEmptyErrorDescription
-	
-	^ 'Stack is empty'! !
+!OOStackState methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 12:20:08'!
+push: elementToPush
+	self subclassResponsibility.! !
+
+!OOStackState methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 12:20:20'!
+size
+	self subclassResponsibility.! !
+
+!OOStackState methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 12:20:24'!
+top
+	self subclassResponsibility.! !
 
 
-!classDefinition: #SentenceFinderByPrefix category: #'Stack-Exercise'!
+!classDefinition: #NullStack category: 'Stack-Exercise'!
+OOStackState subclass: #NullStack
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!NullStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:33:12'!
+isEmpty
+	^true.! !
+
+!NullStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 00:57:32'!
+pop
+	^self error:(OOStack stackEmptyErrorDescription).! !
+
+!NullStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 15:13:42'!
+push: elementToPush
+	|newStack|
+	newStack := RealStack new.
+	newStack push: elementToPush.
+	^newStack.! !
+
+!NullStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 00:14:57'!
+size
+	^0.! !
+
+!NullStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 15:17:39'!
+top
+	^self error:(OOStack stackEmptyErrorDescription).! !
+
+
+!classDefinition: #RealStack category: 'Stack-Exercise'!
+OOStackState subclass: #RealStack
+	instanceVariableNames: 'elements'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 22:11:41'!
+initialize
+	elements := OrderedCollection new.! !
+
+!RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:55:10'!
+isEmpty
+	^false.! !
+
+!RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 22:02:55'!
+pop
+	^elements removeLast.! !
+
+!RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:50:43'!
+push: elementToPush
+	elements add: elementToPush.! !
+
+!RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:57:38'!
+size
+	^elements size.! !
+
+!RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 22:13:37'!
+top
+	^elements last.! !
+
+
+!classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 14:04:17'!
+find: aPrefix in: aStack
+	| collectionAux selectedCollection |
+	
+	collectionAux := OrderedCollection new.
+	(aStack size) timesRepeat: [ collectionAux add: (aStack pop)].
+	
+	selectedCollection := collectionAux select: [:string | string beginsWith: aPrefix].
+	
+	 ^selectedCollection .
+	
+	! !
