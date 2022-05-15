@@ -222,8 +222,8 @@ test05FindPrefixFindsManyWordsAndOutputIsOrdered
 	self assert: (collection = secondCollection).
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'BS 5/15/2022 17:09:58'!
-test06PushManyStringsAndFindTheOnesWithThePrefix
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'MU 5/15/2022 17:59:43'!
+test06FindWithNothingToFindReturnsEmptyCollection
 	| stack finder collection secondCollection |
 	
 	stack := OOStack new.
@@ -235,11 +235,8 @@ test06PushManyStringsAndFindTheOnesWithThePrefix
 	stack push: 'I like potatoes.'.
 	stack push: 'Winter is here'.
 	stack push: 'Ash is the worst pokemon trainer of all'.
-	
-	collection add: 'Winter is coming'.
-	collection add: 'Winter is here'.
 		
-	secondCollection := finder find: 'Wint' in: stack.
+	secondCollection := finder find: 'gfgdhr' in: stack.
 	
 	self assert: (collection = secondCollection).
 	! !
@@ -252,17 +249,27 @@ Object subclass: #OOStack
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:54:37'!
+!OOStack methodsFor: 'accessing' stamp: 'MU 5/14/2022 21:54:55'!
+isEmpty
+	^state isEmpty.! !
+
+!OOStack methodsFor: 'accessing' stamp: 'MU 5/14/2022 21:56:39'!
+size
+	^state size.! !
+
+!OOStack methodsFor: 'accessing' stamp: 'MU 5/14/2022 21:56:48'!
+top
+	^state top.! !
+
+
+!OOStack methodsFor: 'private' stamp: 'MU 5/14/2022 21:54:37'!
 initialize
 	state := NullStack new.
 	
 	! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:54:55'!
-isEmpty
-	^state isEmpty.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 00:45:17'!
+!OOStack methodsFor: 'actions' stamp: 'MU 5/15/2022 00:45:17'!
 pop
 	|elementRemoved|
 	
@@ -271,19 +278,11 @@ pop
 	
 	^elementRemoved.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 00:09:54'!
+!OOStack methodsFor: 'actions' stamp: 'MU 5/15/2022 00:09:54'!
 push: elementToPush
 	
 	state := state push:elementToPush.
 	! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:56:39'!
-size
-	^state size.! !
-
-!OOStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:56:48'!
-top
-	^state top.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -304,24 +303,25 @@ Object subclass: #OOStackState
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStackState methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 12:19:52'!
+!OOStackState methodsFor: 'accessing' stamp: 'MU 5/15/2022 12:19:52'!
 isEmpty
 	self subclassResponsibility.! !
 
-!OOStackState methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 12:19:58'!
-pop
-	self subclassResponsibility.! !
-
-!OOStackState methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 12:20:08'!
-push: elementToPush
-	self subclassResponsibility.! !
-
-!OOStackState methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 12:20:20'!
+!OOStackState methodsFor: 'accessing' stamp: 'MU 5/15/2022 12:20:20'!
 size
 	self subclassResponsibility.! !
 
-!OOStackState methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 12:20:24'!
+!OOStackState methodsFor: 'accessing' stamp: 'MU 5/15/2022 12:20:24'!
 top
+	self subclassResponsibility.! !
+
+
+!OOStackState methodsFor: 'actions' stamp: 'MU 5/15/2022 12:19:58'!
+pop
+	self subclassResponsibility.! !
+
+!OOStackState methodsFor: 'actions' stamp: 'MU 5/15/2022 12:20:08'!
+push: elementToPush
 	self subclassResponsibility.! !
 
 
@@ -332,28 +332,29 @@ OOStackState subclass: #NullStack
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!NullStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:33:12'!
+!NullStack methodsFor: 'accessing' stamp: 'MU 5/14/2022 21:33:12'!
 isEmpty
 	^true.! !
 
-!NullStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 00:57:32'!
+!NullStack methodsFor: 'accessing' stamp: 'MU 5/15/2022 00:14:57'!
+size
+	^0.! !
+
+!NullStack methodsFor: 'accessing' stamp: 'MU 5/15/2022 15:17:39'!
+top
+	^self error:(OOStack stackEmptyErrorDescription).! !
+
+
+!NullStack methodsFor: 'actions' stamp: 'MU 5/15/2022 00:57:32'!
 pop
 	^self error:(OOStack stackEmptyErrorDescription).! !
 
-!NullStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 15:13:42'!
+!NullStack methodsFor: 'actions' stamp: 'MU 5/15/2022 15:13:42'!
 push: elementToPush
 	|newStack|
 	newStack := RealStack new.
 	newStack push: elementToPush.
 	^newStack.! !
-
-!NullStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 00:14:57'!
-size
-	^0.! !
-
-!NullStack methodsFor: 'as yet unclassified' stamp: 'MU 5/15/2022 15:17:39'!
-top
-	^self error:(OOStack stackEmptyErrorDescription).! !
 
 
 !classDefinition: #RealStack category: 'Stack-Exercise'!
@@ -363,29 +364,31 @@ OOStackState subclass: #RealStack
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 22:11:41'!
+!RealStack methodsFor: 'initialization' stamp: 'MU 5/14/2022 22:11:41'!
 initialize
 	elements := OrderedCollection new.! !
 
-!RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:55:10'!
+
+!RealStack methodsFor: 'accessing' stamp: 'MU 5/14/2022 21:55:10'!
 isEmpty
 	^false.! !
 
-!RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 22:02:55'!
-pop
-	^elements removeLast.! !
-
-!RealStack methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 17:27:30'!
-push: elementToPush
-	elements add: elementToPush.! !
-
-!RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:57:38'!
+!RealStack methodsFor: 'accessing' stamp: 'MU 5/14/2022 21:57:38'!
 size
 	^elements size.! !
 
-!RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 22:13:37'!
+!RealStack methodsFor: 'accessing' stamp: 'MU 5/14/2022 22:13:37'!
 top
 	^elements last.! !
+
+
+!RealStack methodsFor: 'actions' stamp: 'MU 5/14/2022 22:02:55'!
+pop
+	^elements removeLast.! !
+
+!RealStack methodsFor: 'actions' stamp: 'BS 5/15/2022 17:27:30'!
+push: elementToPush
+	elements add: elementToPush.! !
 
 
 !classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
@@ -411,8 +414,11 @@ find: aPrefix in: aStack
 	! !
 
 
-!SentenceFinderByPrefix methodsFor: 'checking' stamp: 'BS 5/15/2022 17:03:21'!
+!SentenceFinderByPrefix methodsFor: 'checking' stamp: 'MU 5/15/2022 18:00:31'!
 checkValid: aPrefix.
+	"Si bien estos chequeos se podrían resolver de otra manera sin usar if, ninguna de las soluciones que encontramos nos resultó adecuada ya que todas incluian 
+	sobremodelar para algo tan simple como esto."
+	
 	aPrefix isEmpty ifTrue:[self error:(SentenceFinderByPrefix prefixEmptyErrorDescription)].
 	(aPrefix findString: ' ') = 0 ifFalse:[self error:(SentenceFinderByPrefix prefixContainsSpacesErrorDescription)].! !
 
