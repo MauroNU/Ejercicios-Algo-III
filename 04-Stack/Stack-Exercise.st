@@ -143,7 +143,7 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 16:02:01'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'BS 5/15/2022 16:02:01'!
 test01FindInAnEmptyStackDoesNotFindAnything
 	| stack finder |
 	
@@ -154,7 +154,7 @@ test01FindInAnEmptyStackDoesNotFindAnything
 
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 16:21:59'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'BS 5/15/2022 16:21:59'!
 test02CanNotFindAnEmptyPrefix
 	| stack finder |
 	
@@ -171,7 +171,7 @@ test02CanNotFindAnEmptyPrefix
 
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 16:47:42'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'BS 5/15/2022 16:47:42'!
 test03FindIsCaseSensitive
 	| stack finder |
 	
@@ -183,7 +183,7 @@ test03FindIsCaseSensitive
 	self assert: ((finder find: 'wit' in: stack) size = 0).
 ! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 16:50:19'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'BS 5/15/2022 16:50:19'!
 test04CanNotFindAPrefixWithSpaces
 	| stack finder |
 	
@@ -200,7 +200,7 @@ test04CanNotFindAPrefixWithSpaces
 
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 17:09:49'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'BS 5/15/2022 17:09:49'!
 test05FindPrefixFindsManyWordsAndOutputIsOrdered
 	| stack finder collection secondCollection |
 	
@@ -222,7 +222,7 @@ test05FindPrefixFindsManyWordsAndOutputIsOrdered
 	self assert: (collection = secondCollection).
 	! !
 
-!SentenceFinderByPrefixTest methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 17:09:58'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'BS 5/15/2022 17:09:58'!
 test06PushManyStringsAndFindTheOnesWithThePrefix
 	| stack finder collection secondCollection |
 	
@@ -375,9 +375,9 @@ isEmpty
 pop
 	^elements removeLast.! !
 
-!RealStack methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 17:16:13'!
+!RealStack methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 17:27:30'!
 push: elementToPush
-	elements addFirst: elementToPush.! !
+	elements add: elementToPush.! !
 
 !RealStack methodsFor: 'as yet unclassified' stamp: 'MU 5/14/2022 21:57:38'!
 size
@@ -395,25 +395,26 @@ Object subclass: #SentenceFinderByPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 17:03:21'!
-checkValid: aPrefix.
-	aPrefix isEmpty ifTrue:[self error:(SentenceFinderByPrefix prefixEmptyErrorDescription)].
-	(aPrefix findString: ' ') = 0 ifFalse:[self error:(SentenceFinderByPrefix prefixContainsSpacesErrorDescription)].! !
-
-!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 16:51:59'!
+!SentenceFinderByPrefix methodsFor: 'as yet unclassified' stamp: 'BS 5/15/2022 17:27:44'!
 find: aPrefix in: aStack
 	| collectionAux selectedCollection |
 	
 	self checkValid: aPrefix.
 	
 	collectionAux := OrderedCollection new.
-	(aStack size) timesRepeat: [ collectionAux add: (aStack pop)].
+	(aStack size) timesRepeat: [ collectionAux addFirst: (aStack pop)].
 	
 	selectedCollection := collectionAux select: [:string | string beginsWith: aPrefix].
 	
 	 ^selectedCollection .
 	
 	! !
+
+
+!SentenceFinderByPrefix methodsFor: 'checking' stamp: 'BS 5/15/2022 17:03:21'!
+checkValid: aPrefix.
+	aPrefix isEmpty ifTrue:[self error:(SentenceFinderByPrefix prefixEmptyErrorDescription)].
+	(aPrefix findString: ' ') = 0 ifFalse:[self error:(SentenceFinderByPrefix prefixContainsSpacesErrorDescription)].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
