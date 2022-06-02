@@ -5,71 +5,71 @@ TestCase subclass: #Tests
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!Tests methodsFor: 'as yet unclassified' stamp: 'MU 5/31/2022 20:36:57'!
-test01
+!Tests methodsFor: 'as yet unclassified' stamp: 'BS 6/1/2022 09:38:07'!
+test01elRoverNoSeMueveAnteUnComandoVacio
 	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveComand: ''.
 	self assert: (marsRover position = (0@0))! !
 
-!Tests methodsFor: 'as yet unclassified' stamp: 'MU 5/31/2022 20:37:02'!
-test02
+!Tests methodsFor: 'as yet unclassified' stamp: 'BS 6/1/2022 09:40:19'!
+test02elRoverAvanzaCorrectamente
 	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveComand: 'f'.
 	
 	self assert: (marsRover position = (0@1))! !
 
-!Tests methodsFor: 'as yet unclassified' stamp: 'MU 5/31/2022 20:36:41'!
-test03
+!Tests methodsFor: 'as yet unclassified' stamp: 'BS 6/1/2022 09:40:10'!
+test03elRoverRetrocedeCorrectamente
 	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveComand: 'b'.
 	
 	self assert: (marsRover position = (0@-1))! !
 
-!Tests methodsFor: 'as yet unclassified' stamp: 'MU 5/31/2022 20:38:25'!
-test04
+!Tests methodsFor: 'as yet unclassified' stamp: 'BS 6/1/2022 09:43:39'!
+test04elRoverRotaHaciaLaDerecha
 	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveComand: 'r'.
 	
 	self assert: ((marsRover orientation) isEast).! !
 
-!Tests methodsFor: 'as yet unclassified' stamp: 'MU 5/31/2022 20:38:33'!
-test05
+!Tests methodsFor: 'as yet unclassified' stamp: 'BS 6/1/2022 09:43:58'!
+test05elRoverRotaHaciaLaIzquierda
 	|marsRover|
 	marsRover _ MarsRover new.
 	marsRover receiveComand: 'l'.
 	
 	self assert: ((marsRover orientation) isWest).! !
 
-!Tests methodsFor: 'as yet unclassified' stamp: 'MU 5/31/2022 20:38:17'!
-test06
+!Tests methodsFor: 'as yet unclassified' stamp: 'BS 6/1/2022 09:48:24'!
+test06elRoverRotaYAvanzaCorrectamente
 	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveComand: 'rf'.
 	
 	self assert: (marsRover position = (1@0)) & (marsRover orientation) isEast.! !
 
-!Tests methodsFor: 'as yet unclassified' stamp: 'MU 5/31/2022 20:38:09'!
-test07
+!Tests methodsFor: 'as yet unclassified' stamp: 'BS 6/1/2022 09:48:37'!
+test07elRoverRotaYRetrocedeCorrectamente
 	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveComand: 'lb'.
 	
 	self assert: (marsRover position = (1@0)) & (marsRover orientation) isWest.! !
 
-!Tests methodsFor: 'as yet unclassified' stamp: 'MU 5/31/2022 20:39:12'!
-test08
+!Tests methodsFor: 'as yet unclassified' stamp: 'BS 6/1/2022 09:49:43'!
+test08elRoverRespondeCorrectamenteAUnStringDeComandosValidos
 	| marsRover |
 	marsRover _ MarsRover new.
 	marsRover receiveComand: 'lrrrfffbrf'.
 	
 	self assert: (marsRover position = (-1@-2)) & (marsRover orientation) isWest.! !
 
-!Tests methodsFor: 'as yet unclassified' stamp: 'MU 5/31/2022 20:39:37'!
-test09
+!Tests methodsFor: 'as yet unclassified' stamp: 'BS 6/1/2022 09:49:38'!
+test09elRoverRespondeCorrectamenteAUnStringConComandoInvalido
 	| marsRover |
 	marsRover _ MarsRover new.
 	
