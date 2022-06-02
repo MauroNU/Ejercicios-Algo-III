@@ -84,18 +84,18 @@ test09
 
 !classDefinition: #MarsRover category: 'MarsRover'!
 Object subclass: #MarsRover
-	instanceVariableNames: 'position moving'
+	instanceVariableNames: 'position sensorOfFacingDirection'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRover methodsFor: 'actions' stamp: 'MU 5/31/2022 19:37:02'!
+!MarsRover methodsFor: 'actions' stamp: 'MU 6/2/2022 18:32:31'!
 moveBackward
-	position _ position + (moving backwardDirection).! !
+	position _ position + (sensorOfFacingDirection backwardDirection).! !
 
-!MarsRover methodsFor: 'actions' stamp: 'MU 5/31/2022 19:37:02'!
+!MarsRover methodsFor: 'actions' stamp: 'MU 6/2/2022 18:32:31'!
 moveForward
-	position _ position + (moving forwardDirection).! !
+	position _ position + (sensorOfFacingDirection forwardDirection).! !
 
 !MarsRover methodsFor: 'actions' stamp: 'MU 5/31/2022 22:28:07'!
 receiveComand: commands 
@@ -105,18 +105,18 @@ receiveComand: commands
 		^self executeCommandsRecursively: commands and: anIndex.
 ! !
 
-!MarsRover methodsFor: 'actions' stamp: 'MU 5/31/2022 19:37:02'!
+!MarsRover methodsFor: 'actions' stamp: 'MU 6/2/2022 18:32:31'!
 turnLeft
-	moving _ moving turnLeft.! !
+	sensorOfFacingDirection _ sensorOfFacingDirection turnLeft.! !
 
-!MarsRover methodsFor: 'actions' stamp: 'MU 5/31/2022 19:37:02'!
+!MarsRover methodsFor: 'actions' stamp: 'MU 6/2/2022 18:32:31'!
 turnRight
-	moving _ moving turnRight.! !
+	sensorOfFacingDirection _ sensorOfFacingDirection turnRight.! !
 
 
-!MarsRover methodsFor: 'accessing' stamp: 'MU 5/31/2022 20:32:11'!
+!MarsRover methodsFor: 'accessing' stamp: 'MU 6/2/2022 18:32:31'!
 orientation
-	^moving! !
+	^sensorOfFacingDirection! !
 
 !MarsRover methodsFor: 'accessing' stamp: 'MU 5/31/2022 19:36:56'!
 position
@@ -145,10 +145,10 @@ executeCommandsRecursively: commands and: nextCommandToExecute
 	! !
 
 
-!MarsRover methodsFor: 'initialization' stamp: 'MU 5/31/2022 19:37:02'!
+!MarsRover methodsFor: 'initialization' stamp: 'MU 6/2/2022 18:32:31'!
 initialize
 	position _ 0@0.
-	moving _ North new.! !
+	sensorOfFacingDirection _ North new.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
