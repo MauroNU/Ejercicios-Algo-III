@@ -10,3 +10,5 @@ cardinales, nos pusimos a pensar qué otra solución podíamos dar y llegamos a 
 En principio el rover tiene su posicion actual y la dirección en la que apunta como un par ordenado (x@y). El movimiento se realiza 
 sumando o restando la dirección a la posición, y la rotación se logra con transformaciones lineales.
 Enviamos 2 .st distintos porque nos gustaría saber cuál de nuestras soluciones es superadora ya que nosotros encontramos a las dos viables.
+
+PD: por favor tener en cuenta los nombres de los test ubicados en rovers con vectores, se nos olvidó ponerle los mismos nombres al otro.
