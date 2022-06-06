@@ -38,19 +38,33 @@ test03WithdrawDecreasesBalanceOnTransactionValue
 	self assert: 50 * peso equals: account balance
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:14'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'BS 6/5/2022 21:57:03'!
 test04WithdrawValueMustBePositive 
 
 	| account withdrawValue |
 	
 	account := ReceptiveAccount new.
 	withdrawValue := 50 * peso.
+	Deposit register: 50 * peso on: account.
 	
 	self assert: withdrawValue equals: (Withdraw register: withdrawValue on: account) value
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:22'!
-test05ReceptiveAccountKnowsRegisteredTransactions 
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'BS 6/5/2022 22:00:09'!
+test05ReceptiveAccountFailsWithdrawWithNoBalance 
+
+	|account|
+	
+	account := ReceptiveAccount new.
+	
+	self should:
+		[Withdraw register: 50 * peso on: account]
+		raise: Error 
+		withExceptionDo: [:anError | 
+			self assert: anError messageText = 'Lack of funds.']! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'BS 6/5/2022 22:00:17'!
+test06ReceptiveAccountKnowsRegisteredTransactions 
 
 	| account deposit withdraw |
 	
@@ -62,8 +76,8 @@ test05ReceptiveAccountKnowsRegisteredTransactions
 	self assert: (account hasRegistered: withdraw).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:12:14'!
-test06ReceptiveAccountDoNotKnowNotRegisteredTransactions
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'BS 6/5/2022 22:01:33'!
+test07ReceptiveAccountDoNotKnowNotRegisteredTransactions
 
 	| account deposit withdraw |
 	
@@ -75,8 +89,8 @@ test06ReceptiveAccountDoNotKnowNotRegisteredTransactions
 	self deny: (account hasRegistered: withdraw).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:12:23'!
-test07AccountKnowsItsTransactions 
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'BS 6/5/2022 22:01:02'!
+test08AccountKnowsItsTransactions 
 
 	| account deposit |
 	
@@ -88,17 +102,31 @@ test07AccountKnowsItsTransactions
 	self assert: (account transactions includes: deposit).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'BS 6/2/2022 21:48:07'!
-test08
-	|anAccount1 anAccount2|
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'BS 6/5/2022 22:00:52'!
+test09
+	|JorgesAccount PepesAccount|
 	
-	anAccount1 := ReceptiveAccount new.
-	anAccount2 := ReceptiveAccount new.
+	JorgesAccount := ReceptiveAccount new.
+	PepesAccount := ReceptiveAccount new.
 	
-	Deposit register: 50 * peso on: anAccount1.
+	Deposit register: 50 * peso on: JorgesAccount.
+	JorgesAccount transfer: 30 * peso to: PepesAccount.
 	
-	self assert: 50 equals: anAccount2 balance.
-	self assert: 0 equals: anAccount1 balance.! !
+	self assert: 20 * peso equals: JorgesAccount balance.
+	self assert: 30 * peso equals: PepesAccount balance.! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'BS 6/5/2022 22:00:48'!
+test10
+	|JorgesAccount PepesAccount|
+	
+	JorgesAccount := ReceptiveAccount new.
+	PepesAccount := ReceptiveAccount new.
+	
+	self should:
+		[JorgesAccount transfer: 30 * peso to: PepesAccount.]
+		raise: Error 
+		withExceptionDo: [:anError | 
+			self assert: anError messageText = 'Lack of funds.']! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -114,11 +142,6 @@ value
 	self subclassResponsibility ! !
 
 
-!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'BS 6/2/2022 21:34:01'!
-XXX: aBalance
-	self subclassResponsibility.
-	! !
-
 !AccountTransaction methodsFor: 'as yet unclassified' stamp: 'BS 6/2/2022 21:20:28'!
 giveValueForBalance
 	self subclassResponsibility.! !
@@ -129,7 +152,7 @@ giveValueForBalance
 AccountTransaction class
 	instanceVariableNames: ''!
 
-!AccountTransaction class methodsFor: 'instance creation' stamp: 'NR 10/17/2019 03:22:00'!
+!AccountTransaction class methodsFor: 'instance creation' stamp: 'BS 6/5/2022 21:55:25'!
 register: aValue on: account
 
 	| transaction |
@@ -138,6 +161,16 @@ register: aValue on: account
 	account register: transaction.
 		
 	^ transaction! !
+
+
+!AccountTransaction class methodsFor: 'as yet unclassified' stamp: 'BS 6/5/2022 21:52:27'!
+noFundsError
+	^self error: 'Lack of funds.'.! !
+
+!AccountTransaction class methodsFor: 'as yet unclassified' stamp: 'BS 6/5/2022 21:45:55'!
+transfer: anAmount from: originAccount to: destinationAccount	
+	Withdraw register: anAmount on: originAccount.
+	Deposit register: anAmount on: destinationAccount.! !
 
 
 !classDefinition: #Deposit category: 'ServiciosFinancieros-Ejercicio'!
@@ -209,6 +242,19 @@ for: aValue
 
 	^ self new initializeFor: aValue! !
 
+
+!Withdraw class methodsFor: 'as yet unclassified' stamp: 'BS 6/5/2022 21:54:57'!
+register: aValue on: account
+
+	| transaction |
+	
+	(aValue <= account balance) ifFalse: [^AccountTransaction noFundsError].
+	
+	transaction := self for: aValue.
+	account register: transaction.
+		
+	^ transaction! !
+
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #ReceptiveAccount
@@ -245,3 +291,8 @@ register: aTransaction
 transactions 
 
 	^ transactions copy! !
+
+
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'BS 6/5/2022 21:39:51'!
+transfer: anAmount to: destinationAccount
+	AccountTransaction transfer: anAmount from: self to: destinationAccount! !
