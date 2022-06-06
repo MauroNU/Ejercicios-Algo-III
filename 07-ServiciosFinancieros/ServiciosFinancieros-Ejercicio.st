@@ -88,6 +88,18 @@ test07AccountKnowsItsTransactions
 	self assert: (account transactions includes: deposit).
 ! !
 
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'BS 6/2/2022 21:48:07'!
+test08
+	|anAccount1 anAccount2|
+	
+	anAccount1 := ReceptiveAccount new.
+	anAccount2 := ReceptiveAccount new.
+	
+	Deposit register: 50 * peso on: anAccount1.
+	
+	self assert: 50 equals: anAccount2 balance.
+	self assert: 0 equals: anAccount1 balance.! !
+
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #AccountTransaction
@@ -100,6 +112,16 @@ Object subclass: #AccountTransaction
 value 
 
 	self subclassResponsibility ! !
+
+
+!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'BS 6/2/2022 21:34:01'!
+XXX: aBalance
+	self subclassResponsibility.
+	! !
+
+!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'BS 6/2/2022 21:20:28'!
+giveValueForBalance
+	self subclassResponsibility.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -131,10 +153,15 @@ initializeFor: aValue
 	value := aValue ! !
 
 
+!Deposit methodsFor: 'value' stamp: 'BS 6/2/2022 21:21:07'!
+giveValueForBalance
+	^self value! !
+
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
 
 	^ value! !
+
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -161,10 +188,15 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:33'!
+!Withdraw methodsFor: 'value' stamp: 'BS 6/2/2022 21:11:30'!
 value
 
 	^ value! !
+
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'BS 6/2/2022 21:21:16'!
+giveValueForBalance
+	^self value negated! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -172,10 +204,10 @@ value
 Withdraw class
 	instanceVariableNames: ''!
 
-!Withdraw class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:33'!
+!Withdraw class methodsFor: 'instance creation' stamp: 'BS 6/2/2022 21:18:14'!
 for: aValue
 
-	^ self new initializeFor: aValue ! !
+	^ self new initializeFor: aValue! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -191,10 +223,11 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HAW 5/23/2019 15:19:32'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'BS 6/2/2022 21:42:57'!
 balance
-
-	^transactions sum: [ :aTransaction | aTransaction value ] ifEmpty: [ 0 ]! !
+	^transactions sum: [ :aTransaction | aTransaction giveValueForBalance] ifEmpty: [ 0 ]
+	
+	! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
 hasRegistered: aTransaction
