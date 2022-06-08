@@ -76,7 +76,7 @@ test06ReceptiveAccountDoNotKnowNotRegisteredTransactions
 	self deny: (account hasRegistered: withdraw).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:12:23'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 20:11:55'!
 test07AccountKnowsItsTransactions 
 
 	| account deposit |
@@ -85,8 +85,8 @@ test07AccountKnowsItsTransactions
 	
 	deposit := Deposit register: 50 * peso on: account.
 		
-	self assert: 1 equals: account transactions size.
-	self assert: (account transactions includes: deposit).
+	self assert: 1 equals: account hasTransactions size.
+	self assert: (account hasTransactions includes: deposit).
 ! !
 
 !ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/7/2022 21:36:46'!
@@ -132,7 +132,7 @@ test10CantTransferIfAccountLacksFunds
 		withExceptionDo: [:anError | self assert: anError messageText = AccountTransaction insufficientFundsErrorMessage ].
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/7/2022 22:00:38'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 20:11:55'!
 test11AccountRecognizesTransference
 	
 	| account transference account2 |
@@ -142,14 +142,14 @@ test11AccountRecognizesTransference
 	Deposit register: 75*peso on: account.
 	transference _ Transference register: 50*peso from: account to: account2.
 	
-	self assert: (account transactions includes: transference withdraw).
-	self assert: (account2 transactions includes: transference deposit).
+	self assert: (account hasTransactions includes: transference withdraw).
+	self assert: (account2 hasTransactions includes: transference deposit).
 
 	
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 18:53:47'!
-test12AnAccountTransferenceDepositCanReturnHisCounterpart
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 20:11:55'!
+test12AnAccountTransferenceLegsRecognizeTheirCounterparts
 	
 	| account transference account2 |
 	account _ ReceptiveAccount new.
@@ -158,8 +158,192 @@ test12AnAccountTransferenceDepositCanReturnHisCounterpart
 	Deposit register: 75*peso on: account.
 	transference _ Transference register: 50*peso from: account to: account2.
 	
-	self assert: ((transference deposit) counterpart = (account transactions) last).
+	self assert: ((transference deposit) counterpart = (account hasTransactions) last).
+	self assert: ((transference withdraw) counterpart = (account2 hasTransactions) last).
 	
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 20:02:49'!
+test13APortfolioCanAssociateAccounts
+	
+	| account portfolio account2 |
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	portfolio _ Portfolio new.
+	
+	portfolio register: account.
+	portfolio register: account2.
+	
+	self assert: portfolio size = 2.
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 19:23:55'!
+test14APortfolioCanReturnATotalBalance
+	
+	| account portfolio account2 |
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	portfolio _ Portfolio new.
+	
+	Deposit register: 40*peso on: account.
+	Deposit register: 60*peso on: account2.
+	
+	portfolio register: account.
+	portfolio register: account2.
+	
+	self assert: (portfolio balance) = (100*peso).
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 20:11:55'!
+test15PortfolioKnowsIfItHasTransactions
+	
+	| account portfolio account2 |
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	portfolio _ Portfolio new.
+	
+	Deposit register: 40*peso on: account.
+	Deposit register: 60*peso on: account2.
+	
+	portfolio register: account.
+	portfolio register: account2.
+	
+	self assert: portfolio hasTransactions.
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 19:29:40'!
+test16PortfolioCanReturnAllTransactions
+	
+	| account portfolio account2 transactions |
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	portfolio _ Portfolio new.
+	transactions _ OrderedCollection new.
+	
+	transactions add: (Deposit register: 40*peso on: account).
+	transactions add: (Deposit register: 60*peso on: account2).
+	transactions add: (Withdraw register: 25*peso on: account2).
+	
+	
+	portfolio register: account.
+	portfolio register: account2.
+	
+	self assert: (portfolio allTransactions) = transactions.
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 20:02:54'!
+test17APortfolioCanAssociatePortfolios
+	
+	| account portfolio account2 portfolio2 |
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	portfolio _ Portfolio new.
+	portfolio2 _ Portfolio new.
+	
+	portfolio register: account.
+	portfolio register: account2.
+	
+	portfolio2 register: portfolio.
+	
+	self assert: portfolio2 size = 2.
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 20:06:48'!
+test18APortfolioWithPortfoliosCanReturnATotalBalance
+	
+	| account portfolio account2 account3 portfolio2 |
+	
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	account3 _ ReceptiveAccount new.
+	portfolio _ Portfolio new.
+	portfolio2 _ Portfolio new.
+	
+	Deposit register: 40*peso on: account.
+	Deposit register: 60*peso on: account2.
+	Withdraw register: 15*peso on: account2.
+	Deposit register: 20*peso on: account3.
+	
+	portfolio register: account.
+	portfolio register: account2.
+	portfolio2 register: portfolio.
+	portfolio2 register: account3.
+	
+	self assert: (portfolio2 balance) = (105*peso).
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 20:11:55'!
+test19PortfolioWithPortfoliosKnowsIfItHasTransactions
+	
+	| account portfolio account2 account3 portfolio2 |
+	
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	account3 _ ReceptiveAccount new.
+	portfolio _ Portfolio new.
+	portfolio2 _ Portfolio new.
+	
+	Deposit register: 40*peso on: account.
+	Deposit register: 60*peso on: account2.
+	Withdraw register: 15*peso on: account2.
+	Deposit register: 20*peso on: account3.
+	
+	portfolio register: account.
+	portfolio register: account2.
+	portfolio2 register: portfolio.
+	portfolio2 register: account3.
+	
+	self assert: portfolio hasTransactions.
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 20:16:19'!
+test20PortfolioWithPortfoliosCanReturnAllTransactions
+	
+	| account portfolio account2 account3 portfolio2 transactions |
+	
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	account3 _ ReceptiveAccount new.
+	portfolio _ Portfolio new.
+	portfolio2 _ Portfolio new.
+	transactions _ OrderedCollection new.
+	
+	transactions add: (Deposit register: 40*peso on: account).
+	transactions add: (Deposit register: 60*peso on: account2).
+	transactions add: (Withdraw register: 15*peso on: account2).
+	transactions add: (Deposit register: 20*peso on: account3).
+	
+	portfolio register: account.
+	portfolio register: account2.
+	portfolio2 register: portfolio.
+	portfolio2 register: account3.
+	
+	self assert: (portfolio2 allTransactions) = transactions.
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 20:21:20'!
+test21AnAccountCanNotBeDuplicated
+	
+	| account portfolio account2 account3 portfolio2 transactions |
+	
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	account3 _ ReceptiveAccount new.
+	portfolio _ Portfolio new.
+	portfolio2 _ Portfolio new.
+	transactions _ OrderedCollection new.
+	
+	transactions add: (Deposit register: 40*peso on: account).
+	transactions add: (Deposit register: 60*peso on: account2).
+	transactions add: (Withdraw register: 15*peso on: account2).
+	transactions add: (Deposit register: 20*peso on: account3).
+	
+	portfolio register: account.
+	portfolio register: account2.
+	portfolio2 register: portfolio.
+	portfolio2 register: account3.
+	
+	self assert: (portfolio2 allTransactions) = transactions.
 ! !
 
 
@@ -301,6 +485,43 @@ counterpart
 	^counterpart! !
 
 
+!classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Portfolio
+	instanceVariableNames: 'associatedAccounts'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Portfolio methodsFor: 'category-name' stamp: 'MU 6/8/2022 20:14:01'!
+allTransactions
+	| allTransactions |
+	allTransactions _ OrderedCollection new.
+	associatedAccounts do: [:anAccount | (anAccount allTransactions) do: [:aTransaction | allTransactions add: aTransaction]].
+	^allTransactions.! !
+
+!Portfolio methodsFor: 'category-name' stamp: 'MU 6/8/2022 19:21:48'!
+balance
+	^associatedAccounts sum: [:anAccount | anAccount balance.]! !
+
+!Portfolio methodsFor: 'category-name' stamp: 'MU 6/8/2022 20:12:44'!
+hasTransactions
+	^associatedAccounts anySatisfy: [:anAccount | anAccount hasTransactions].! !
+
+!Portfolio methodsFor: 'category-name' stamp: 'MU 6/8/2022 20:19:46'!
+register: accountToRegister
+	(associatedAccounts anySatisfy: [:anAccount | anAccount = accountToRegister]) ifTrue: [^self error: 'Account or portfolio already registered'].
+	associatedAccounts add: accountToRegister.! !
+
+!Portfolio methodsFor: 'category-name' stamp: 'MU 6/8/2022 20:02:35'!
+size
+	^associatedAccounts sum: [:anAccount| anAccount size].! !
+
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'MU 6/8/2022 19:14:52'!
+initialize
+	associatedAccounts _ OrderedCollection new.! !
+
+
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #ReceptiveAccount
 	instanceVariableNames: 'transactions'
@@ -314,6 +535,11 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'MU 6/8/2022 20:14:12'!
+allTransactions 
+
+	^ transactions copy! !
+
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'MU 6/8/2022 19:00:55'!
 balance
 
@@ -326,16 +552,21 @@ hasRegistered: aTransaction
 	^ transactions includes: aTransaction 
 ! !
 
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'MU 6/8/2022 20:12:34'!
+hasTransactions 
+
+	^ (transactions size) > 0! !
+
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
 
 	transactions add: aTransaction 
 ! !
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
-transactions 
 
-	^ transactions copy! !
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'MU 6/8/2022 20:02:01'!
+size
+	^1.! !
 
 
 !classDefinition: #Transference category: 'ServiciosFinancieros-Ejercicio'!
