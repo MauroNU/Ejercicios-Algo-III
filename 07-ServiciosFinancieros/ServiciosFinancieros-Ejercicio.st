@@ -148,7 +148,7 @@ test11AccountRecognizesTransference
 	
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/7/2022 22:03:09'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 18:53:47'!
 test12AnAccountTransferenceDepositCanReturnHisCounterpart
 	
 	| account transference account2 |
@@ -158,7 +158,7 @@ test12AnAccountTransferenceDepositCanReturnHisCounterpart
 	Deposit register: 75*peso on: account.
 	transference _ Transference register: 50*peso from: account to: account2.
 	
-	self assert: ((transference deposit) counterpart = (account2 transactions) last).
+	self assert: ((transference deposit) counterpart = (account transactions) last).
 	
 ! !
 
@@ -234,6 +234,22 @@ for: aValue
 
 
 
+!classDefinition: #TransferDeposit category: 'ServiciosFinancieros-Ejercicio'!
+Deposit subclass: #TransferDeposit
+	instanceVariableNames: 'counterpart'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'MU 6/8/2022 18:45:44'!
+associateWith: aWithdraw
+	counterpart _ aWithdraw.! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'MU 6/8/2022 18:38:16'!
+counterpart
+	^counterpart! !
+
+
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
 AccountTransaction subclass: #Withdraw
 	instanceVariableNames: 'value'
@@ -269,6 +285,22 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
+!classDefinition: #TransferWithdraw category: 'ServiciosFinancieros-Ejercicio'!
+Withdraw subclass: #TransferWithdraw
+	instanceVariableNames: 'counterpart'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'MU 6/8/2022 18:45:58'!
+associateWith: aDeposit
+	counterpart _ aDeposit.! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'MU 6/8/2022 18:38:28'!
+counterpart
+	^counterpart! !
+
+
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #ReceptiveAccount
 	instanceVariableNames: 'transactions'
@@ -282,10 +314,11 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'MU 6/7/2022 20:44:22'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'MU 6/8/2022 19:00:55'!
 balance
 
-	^transactions sum: [ :aTransaction | (aTransaction class = Withdraw) ifTrue:[aTransaction value negated] ifFalse: [aTransaction value] ] ifEmpty: [ 0 ]! !
+	^transactions sum: [ :aTransaction | ((aTransaction class = Withdraw) or: (aTransaction class = TransferWithdraw)) ifTrue:[aTransaction value negated] 
+		ifFalse: [aTransaction value] ] ifEmpty: [ 0 ]! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
 hasRegistered: aTransaction
@@ -316,10 +349,14 @@ Object subclass: #Transference
 deposit
 	^deposit.! !
 
-!Transference methodsFor: 'as yet unclassified' stamp: 'MU 6/7/2022 21:59:34'!
+!Transference methodsFor: 'as yet unclassified' stamp: 'MU 6/8/2022 18:45:15'!
 initializeWith: aDeposit and: aWithdraw
 	deposit _ aDeposit.	
-	withdraw _ aWithdraw ! !
+	withdraw _ aWithdraw.
+	deposit associateWith: withdraw.
+	withdraw associateWith: deposit.
+	value _ deposit value.
+ ! !
 
 !Transference methodsFor: 'as yet unclassified' stamp: 'MU 6/7/2022 21:58:11'!
 withdraw
@@ -331,9 +368,9 @@ withdraw
 Transference class
 	instanceVariableNames: ''!
 
-!Transference class methodsFor: 'category-name' stamp: 'MU 6/7/2022 22:00:01'!
+!Transference class methodsFor: 'category-name' stamp: 'MU 6/8/2022 18:43:55'!
 register: anAmount from: originAccount to: destinationAccount
-	|withdraw deposit|
-	withdraw _ Withdraw register: anAmount on: originAccount. 
-	deposit _ Deposit register: anAmount on: destinationAccount.
+	| withdraw deposit |
+	withdraw _ TransferWithdraw register: anAmount on: originAccount. 
+	deposit _ TransferDeposit register: anAmount on: destinationAccount.
 	^self new initializeWith: deposit and: withdraw.! !
