@@ -38,13 +38,14 @@ test03WithdrawDecreasesBalanceOnTransactionValue
 	self assert: 50 * peso equals: account balance
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:14'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/7/2022 21:36:17'!
 test04WithdrawValueMustBePositive 
 
 	| account withdrawValue |
 	
 	account := ReceptiveAccount new.
 	withdrawValue := 50 * peso.
+	Deposit register: 50*peso on: account.
 	
 	self assert: withdrawValue equals: (Withdraw register: withdrawValue on: account) value
 ! !
@@ -88,17 +89,78 @@ test07AccountKnowsItsTransactions
 	self assert: (account transactions includes: deposit).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'BS 6/2/2022 21:48:07'!
-test08
-	|anAccount1 anAccount2|
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/7/2022 21:36:46'!
+test08ReceptiveAccountReceivesTransferenceCorrectly
+
+	| account account2 |
 	
-	anAccount1 := ReceptiveAccount new.
-	anAccount2 := ReceptiveAccount new.
+	account := ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
 	
-	Deposit register: 50 * peso on: anAccount1.
+	Deposit register: 50*peso on: account.
+	Transference register: 50*peso from: account to: account2.
+		
+	self assert: account2 balance equals: 50*peso.
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/7/2022 21:03:24'!
+test09EmitterAccountHasLessMoney
+
+	| account account2 |
 	
-	self assert: 50 equals: anAccount2 balance.
-	self assert: 0 equals: anAccount1 balance.! !
+	account := ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	
+	Deposit register: 75*peso on: account.
+	Transference register: 50*peso from: account to: account2.
+		
+	self assert: account balance equals: 25*peso.
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/7/2022 21:35:03'!
+test10CantTransferIfAccountLacksFunds
+
+	| account account2 |
+	
+	account := ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	
+	Deposit register: 75*peso on: account.
+		
+	self should: [Transference register: 150*peso from: account to: account2.]
+		raise: Error
+		withExceptionDo: [:anError | self assert: anError messageText = AccountTransaction insufficientFundsErrorMessage ].
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/7/2022 22:00:38'!
+test11AccountRecognizesTransference
+	
+	| account transference account2 |
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	
+	Deposit register: 75*peso on: account.
+	transference _ Transference register: 50*peso from: account to: account2.
+	
+	self assert: (account transactions includes: transference withdraw).
+	self assert: (account2 transactions includes: transference deposit).
+
+	
+! !
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/7/2022 22:03:09'!
+test12AnAccountTransferenceDepositCanReturnHisCounterpart
+	
+	| account transference account2 |
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	
+	Deposit register: 75*peso on: account.
+	transference _ Transference register: 50*peso from: account to: account2.
+	
+	self assert: ((transference deposit) counterpart = (account2 transactions) last).
+	
+! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -113,31 +175,27 @@ value
 
 	self subclassResponsibility ! !
 
-
-!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'BS 6/2/2022 21:34:01'!
-XXX: aBalance
-	self subclassResponsibility.
-	! !
-
-!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'BS 6/2/2022 21:20:28'!
-giveValueForBalance
-	self subclassResponsibility.! !
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'AccountTransaction class' category: 'ServiciosFinancieros-Ejercicio'!
 AccountTransaction class
 	instanceVariableNames: ''!
 
-!AccountTransaction class methodsFor: 'instance creation' stamp: 'NR 10/17/2019 03:22:00'!
+!AccountTransaction class methodsFor: 'instance creation' stamp: 'MU 6/7/2022 21:34:40'!
 register: aValue on: account
 
 	| transaction |
 	
 	transaction := self for: aValue.
+	(transaction enoughFunds: account balance) ifFalse: [^self error: self insufficientFundsErrorMessage ].
 	account register: transaction.
 		
 	^ transaction! !
+
+
+!AccountTransaction class methodsFor: 'as yet unclassified' stamp: 'MU 6/7/2022 21:34:17'!
+insufficientFundsErrorMessage
+	^'Account has insufficient funds'.! !
 
 
 !classDefinition: #Deposit category: 'ServiciosFinancieros-Ejercicio'!
@@ -153,15 +211,15 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Deposit methodsFor: 'value' stamp: 'BS 6/2/2022 21:21:07'!
-giveValueForBalance
-	^self value! !
-
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
 
 	^ value! !
 
+
+!Deposit methodsFor: 'as yet unclassified' stamp: 'MU 6/7/2022 21:13:13'!
+enoughFunds: anAmount
+	^true.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -173,6 +231,7 @@ Deposit class
 for: aValue
 
 	^ self new initializeFor: aValue ! !
+
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
@@ -188,15 +247,15 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'BS 6/2/2022 21:11:30'!
+!Withdraw methodsFor: 'value' stamp: 'MU 6/7/2022 20:39:32'!
 value
 
 	^ value! !
 
 
-!Withdraw methodsFor: 'as yet unclassified' stamp: 'BS 6/2/2022 21:21:16'!
-giveValueForBalance
-	^self value negated! !
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'MU 6/7/2022 21:36:09'!
+enoughFunds: anAmount
+	^value <= anAmount.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -204,10 +263,10 @@ giveValueForBalance
 Withdraw class
 	instanceVariableNames: ''!
 
-!Withdraw class methodsFor: 'instance creation' stamp: 'BS 6/2/2022 21:18:14'!
+!Withdraw class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:33'!
 for: aValue
 
-	^ self new initializeFor: aValue! !
+	^ self new initializeFor: aValue ! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -223,11 +282,10 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'BS 6/2/2022 21:42:57'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'MU 6/7/2022 20:44:22'!
 balance
-	^transactions sum: [ :aTransaction | aTransaction giveValueForBalance] ifEmpty: [ 0 ]
-	
-	! !
+
+	^transactions sum: [ :aTransaction | (aTransaction class = Withdraw) ifTrue:[aTransaction value negated] ifFalse: [aTransaction value] ] ifEmpty: [ 0 ]! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
 hasRegistered: aTransaction
@@ -245,3 +303,37 @@ register: aTransaction
 transactions 
 
 	^ transactions copy! !
+
+
+!classDefinition: #Transference category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Transference
+	instanceVariableNames: 'value deposit withdraw'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Transference methodsFor: 'as yet unclassified' stamp: 'MU 6/7/2022 21:57:57'!
+deposit
+	^deposit.! !
+
+!Transference methodsFor: 'as yet unclassified' stamp: 'MU 6/7/2022 21:59:34'!
+initializeWith: aDeposit and: aWithdraw
+	deposit _ aDeposit.	
+	withdraw _ aWithdraw ! !
+
+!Transference methodsFor: 'as yet unclassified' stamp: 'MU 6/7/2022 21:58:11'!
+withdraw
+	^withdraw.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Transference class' category: 'ServiciosFinancieros-Ejercicio'!
+Transference class
+	instanceVariableNames: ''!
+
+!Transference class methodsFor: 'category-name' stamp: 'MU 6/7/2022 22:00:01'!
+register: anAmount from: originAccount to: destinationAccount
+	|withdraw deposit|
+	withdraw _ Withdraw register: anAmount on: originAccount. 
+	deposit _ Deposit register: anAmount on: destinationAccount.
+	^self new initializeWith: deposit and: withdraw.! !
