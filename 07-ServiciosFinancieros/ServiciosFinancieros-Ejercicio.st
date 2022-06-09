@@ -321,30 +321,18 @@ test20PortfolioWithPortfoliosCanReturnAllTransactions
 	self assert: (portfolio2 allTransactions) = transactions.
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'MU 6/8/2022 20:21:20'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'BS 6/9/2022 14:39:06'!
 test21AnAccountCanNotBeDuplicated
 	
-	| account portfolio account2 account3 portfolio2 transactions |
-	
+	| account portfolio|
 	account _ ReceptiveAccount new.
-	account2 _ ReceptiveAccount new.
-	account3 _ ReceptiveAccount new.
 	portfolio _ Portfolio new.
-	portfolio2 _ Portfolio new.
-	transactions _ OrderedCollection new.
-	
-	transactions add: (Deposit register: 40*peso on: account).
-	transactions add: (Deposit register: 60*peso on: account2).
-	transactions add: (Withdraw register: 15*peso on: account2).
-	transactions add: (Deposit register: 20*peso on: account3).
 	
 	portfolio register: account.
-	portfolio register: account2.
-	portfolio2 register: portfolio.
-	portfolio2 register: account3.
 	
-	self assert: (portfolio2 allTransactions) = transactions.
-! !
+	self should: [portfolio register: account.]
+		raise: Error
+		withExceptionDo: [:anError | self assert: anError messageText = Portfolio accountAlreadyExistsError ].! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -415,7 +403,6 @@ Deposit class
 for: aValue
 
 	^ self new initializeFor: aValue ! !
-
 
 
 !classDefinition: #TransferDeposit category: 'ServiciosFinancieros-Ejercicio'!
@@ -507,9 +494,9 @@ balance
 hasTransactions
 	^associatedAccounts anySatisfy: [:anAccount | anAccount hasTransactions].! !
 
-!Portfolio methodsFor: 'category-name' stamp: 'MU 6/8/2022 20:19:46'!
+!Portfolio methodsFor: 'category-name' stamp: 'BS 6/9/2022 14:43:55'!
 register: accountToRegister
-	(associatedAccounts anySatisfy: [:anAccount | anAccount = accountToRegister]) ifTrue: [^self error: 'Account or portfolio already registered'].
+	(associatedAccounts anySatisfy: [:anAccount | anAccount = accountToRegister]) ifTrue: [^self error: Portfolio accountAlreadyExistsError ].
 	associatedAccounts add: accountToRegister.! !
 
 !Portfolio methodsFor: 'category-name' stamp: 'MU 6/8/2022 20:02:35'!
@@ -520,6 +507,16 @@ size
 !Portfolio methodsFor: 'as yet unclassified' stamp: 'MU 6/8/2022 19:14:52'!
 initialize
 	associatedAccounts _ OrderedCollection new.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
+Portfolio class
+	instanceVariableNames: ''!
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'BS 6/9/2022 14:42:47'!
+accountAlreadyExistsError
+	^'The account is already registered in this portfolio'.! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
