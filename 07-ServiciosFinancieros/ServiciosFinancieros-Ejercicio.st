@@ -369,7 +369,7 @@ Object subclass: #AccountTransaction
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!AccountTransaction methodsFor: 'value' stamp: 'HernanWilkinson 9/12/2011 12:25'!
+!AccountTransaction methodsFor: 'accesing' stamp: 'HernanWilkinson 9/12/2011 12:25'!
 value 
 
 	self subclassResponsibility ! !
@@ -410,15 +410,14 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
+!Deposit methodsFor: 'accesing' stamp: 'MU 6/7/2022 21:13:13'!
+enoughFunds: anAmount
+	^true.! !
+
+!Deposit methodsFor: 'accesing' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
 
 	^ value! !
-
-
-!Deposit methodsFor: 'funds' stamp: 'MU 6/7/2022 21:13:13'!
-enoughFunds: anAmount
-	^true.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -439,13 +438,14 @@ Deposit subclass: #TransferDeposit
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
+!TransferDeposit methodsFor: 'accesing' stamp: 'MU 6/8/2022 18:38:16'!
+counterpart
+	^counterpart! !
+
+
 !TransferDeposit methodsFor: 'association' stamp: 'MU 6/8/2022 18:45:44'!
 associateWith: aWithdraw
 	counterpart _ aWithdraw.! !
-
-!TransferDeposit methodsFor: 'association' stamp: 'MU 6/8/2022 18:38:16'!
-counterpart
-	^counterpart! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
@@ -461,15 +461,14 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'MU 6/7/2022 20:39:32'!
+!Withdraw methodsFor: 'accesing' stamp: 'MU 6/7/2022 21:36:09'!
+enoughFunds: anAmount
+	^value <= anAmount.! !
+
+!Withdraw methodsFor: 'accesing' stamp: 'MU 6/7/2022 20:39:32'!
 value
 
 	^ value! !
-
-
-!Withdraw methodsFor: 'funds' stamp: 'MU 6/7/2022 21:36:09'!
-enoughFunds: anAmount
-	^value <= anAmount.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -490,61 +489,61 @@ Withdraw subclass: #TransferWithdraw
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
+!TransferWithdraw methodsFor: 'accesing' stamp: 'MU 6/8/2022 18:38:28'!
+counterpart
+	^counterpart! !
+
+
 !TransferWithdraw methodsFor: 'association' stamp: 'MU 6/8/2022 18:45:58'!
 associateWith: aDeposit
 	counterpart _ aDeposit.! !
 
-!TransferWithdraw methodsFor: 'association' stamp: 'MU 6/8/2022 18:38:28'!
-counterpart
-	^counterpart! !
-
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #Portfolio
-	instanceVariableNames: 'associatedAccounts fatherPortfolio'
+	instanceVariableNames: 'financialRecords fatherPortfolio'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!Portfolio methodsFor: 'validation' stamp: 'BS 6/9/2022 16:56:58'!
+!Portfolio methodsFor: 'validation' stamp: 'MU 6/9/2022 17:31:29'!
 isNewFinancialRecordAlreadyRegistered: financialRecordToRegister
-	(associatedAccounts anySatisfy: [:aFinancialRecord| aFinancialRecord contains: financialRecordToRegister]) ifTrue: [^self error: Portfolio accountAlreadyExistsError].! !
+	(financialRecords anySatisfy: [:aFinancialRecord| aFinancialRecord contains: financialRecordToRegister]) ifTrue: [^self error: Portfolio accountAlreadyExistsError].! !
 
 !Portfolio methodsFor: 'validation' stamp: 'BS 6/9/2022 16:02:39'!
 isNewFinancialRecordSelf: accountToRegister
 	(self = accountToRegister) ifTrue: [^self error: Portfolio tryingToRegisterItselfError].! !
 
 
-!Portfolio methodsFor: 'transactions' stamp: 'MU 6/8/2022 20:14:01'!
+!Portfolio methodsFor: 'accesing' stamp: 'MU 6/9/2022 17:31:40'!
 allTransactions
 	| allTransactions |
 	allTransactions _ OrderedCollection new.
-	associatedAccounts do: [:anAccount | (anAccount allTransactions) do: [:aTransaction | allTransactions add: aTransaction]].
+	financialRecords do: [:aFinancialRecord | (aFinancialRecord allTransactions) do: [:aTransaction | allTransactions add: aTransaction]].
 	^allTransactions.! !
 
-!Portfolio methodsFor: 'transactions' stamp: 'MU 6/8/2022 20:12:44'!
-hasTransactions
-	^associatedAccounts anySatisfy: [:anAccount | anAccount hasTransactions].! !
-
-
-!Portfolio methodsFor: 'accounts' stamp: 'MU 6/8/2022 19:21:48'!
+!Portfolio methodsFor: 'accesing' stamp: 'MU 6/9/2022 17:31:51'!
 balance
-	^associatedAccounts sum: [:anAccount | anAccount balance.]! !
+	^financialRecords sum: [:aFinancialRecord | aFinancialRecord balance.]! !
 
-!Portfolio methodsFor: 'accounts' stamp: 'BS 6/9/2022 16:16:51'!
-contains: anAccount
-	^associatedAccounts anySatisfy: [:associatedAccount | associatedAccount = anAccount].! !
+!Portfolio methodsFor: 'accesing' stamp: 'MU 6/9/2022 17:32:06'!
+contains: aFinancialRecord
+	^financialRecords anySatisfy: [:associatedAccount | associatedAccount = aFinancialRecord].! !
 
-!Portfolio methodsFor: 'accounts' stamp: 'MU 6/8/2022 20:02:35'!
+!Portfolio methodsFor: 'accesing' stamp: 'MU 6/9/2022 17:32:25'!
+hasTransactions
+	^financialRecords anySatisfy: [:aFinancialRecord | aFinancialRecord hasTransactions].! !
+
+!Portfolio methodsFor: 'accesing' stamp: 'MU 6/9/2022 17:32:31'!
 size
-	^associatedAccounts sum: [:anAccount| anAccount size].! !
+	^financialRecords sum: [:aFinancialRecord| aFinancialRecord size].! !
 
 
-!Portfolio methodsFor: 'initialization' stamp: 'BS 6/9/2022 16:31:22'!
+!Portfolio methodsFor: 'initialization' stamp: 'MU 6/9/2022 17:31:29'!
 initialize
-	associatedAccounts _ OrderedCollection new.! !
+	financialRecords _ OrderedCollection new.! !
 
-!Portfolio methodsFor: 'initialization' stamp: 'BS 6/9/2022 16:35:01'!
+!Portfolio methodsFor: 'initialization' stamp: 'MU 6/9/2022 17:31:29'!
 register: financialRecordToRegister
 	
 	self isNewFinancialRecordSelf: financialRecordToRegister.
@@ -552,7 +551,7 @@ register: financialRecordToRegister
 	self isNewFinancialRecordAlreadyRegistered: financialRecordToRegister.
 	
 	financialRecordToRegister setFather: self.
-	associatedAccounts add: financialRecordToRegister.! !
+	financialRecords add: financialRecordToRegister.! !
 
 !Portfolio methodsFor: 'initialization' stamp: 'BS 6/9/2022 16:34:28'!
 setFather: aPortfolio
@@ -644,11 +643,11 @@ initializeWith: aDeposit and: aWithdraw
  ! !
 
 
-!Transference methodsFor: 'access' stamp: 'MU 6/7/2022 21:57:57'!
+!Transference methodsFor: 'accessing' stamp: 'MU 6/7/2022 21:57:57'!
 deposit
 	^deposit.! !
 
-!Transference methodsFor: 'access' stamp: 'MU 6/7/2022 21:58:11'!
+!Transference methodsFor: 'accessing' stamp: 'MU 6/7/2022 21:58:11'!
 withdraw
 	^withdraw.! !
 
