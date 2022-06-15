@@ -55,6 +55,80 @@ test03AccountSummaryOfAnAccountWithManyTransactionReportsCorrectly
 	
 	self assert: sampleSummary equals: accountSummary report .! !
 
+!AccountSummaryTest methodsFor: 'tests' stamp: 'BS 6/12/2022 15:53:41'!
+test04AccountSummaryOfAPortfolioWithOneAccountAndOneTransactionReportsCorrectly
+	|accountSummary sampleSummary account portfolio |
+	sampleSummary _ OrderedCollection new.
+	
+	
+	account _ ReceptiveAccount new.
+	portfolio _ Portfolio with: account.	
+	
+	Deposit register: 10 * peso on: account .
+
+	sampleSummary _ {'Depósito por 10 * pesos'.
+					'Balance = 10 * pesos'.} asOrderedCollection.
+	
+	accountSummary _ AccountSummary from: portfolio .
+	
+	self assert: sampleSummary equals: accountSummary report .! !
+
+!AccountSummaryTest methodsFor: 'tests' stamp: 'BS 6/12/2022 16:02:00'!
+test05AccountSummaryOfAPortfolioWithManyAccountsReportsCorrectly
+	|accountSummary sampleSummary account1 account2 portfolio |
+	sampleSummary _ OrderedCollection new.
+	
+	
+	account1 _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	portfolio _ Portfolio with: account1 with: account2.	
+	
+	Deposit register: 10 * peso on: account1 .
+	Deposit register: 200 * peso on: account2.
+	Transfer amount: 150* peso from: account2 to: account1.
+	Withdraw register: 30* peso on: account2.
+	sampleSummary _ {'Depósito por 10 * pesos'.
+					'Entrada por transferencia de 150 * pesos'.
+					'Depósito por 200 * pesos'.
+					'Salida por transferencia de 150 * pesos'.
+					'Extracción por 30 * pesos'.
+					'Balance = 180 * pesos'.} asOrderedCollection.
+	
+	accountSummary _ AccountSummary from: portfolio .
+	
+	self assert: sampleSummary equals: accountSummary report .! !
+
+!AccountSummaryTest methodsFor: 'tests' stamp: 'BS 6/13/2022 20:09:10'!
+test06AccountSummaryOfAPortfolioWithAPortfolioReportsCorrectly
+	|accountSummary sampleSummary account1 account2 account3 portfolio1 portfolio2 |
+	sampleSummary _ OrderedCollection new.
+	
+	
+	account1 _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	account3 _ ReceptiveAccount new.
+	
+	
+	portfolio1 _ Portfolio with: account1 with: account2.	
+	portfolio2 _ Portfolio with: account3 with: portfolio1.
+	
+	Deposit register: 10 * peso on: account1 .
+	Deposit register: 200 * peso on: account2.
+	Transfer amount: 150* peso from: account2 to: account1.
+	Withdraw register: 30* peso on: account2.
+	Deposit register: 15 * peso on: account3.
+	sampleSummary _ {'Depósito por 15 * pesos'.
+					'Depósito por 10 * pesos'.
+					'Entrada por transferencia de 150 * pesos'.
+					'Depósito por 200 * pesos'.
+					'Salida por transferencia de 150 * pesos'.
+					'Extracción por 30 * pesos'.
+					'Balance = 195 * pesos'.} asOrderedCollection.
+	
+	accountSummary _ AccountSummary from: portfolio2 .
+	
+	self assert: sampleSummary equals: accountSummary report .! !
+
 
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #PortfolioTest
@@ -367,14 +441,49 @@ TestCase subclass: #TransferNetTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferNetTest methodsFor: 'tests' stamp: 'BS 6/11/2022 17:29:14'!
+!TransferNetTest methodsFor: 'tests' stamp: 'BS 6/12/2022 15:30:24'!
 test01TransferNetOfAnAccountWithNoTransactionIsZero
 	|account accountTransferNet sampleTransferNet|
-	sampleTransferNet _ 0.
+	sampleTransferNet _ 0 * peso.
 	
 	account _ ReceptiveAccount new.
 	
-	accountTransferNet _ TransferNet from: account.! !
+	accountTransferNet _ TransferNet from: account.
+	
+	self assert: sampleTransferNet equals: accountTransferNet report.
+	! !
+
+!TransferNetTest methodsFor: 'tests' stamp: 'BS 6/12/2022 15:32:24'!
+test02TransferNetOfAnAccountWithOneTransferenceReportsDepositCorrectly
+	|account accountTransferNet sampleTransferNet account2 |
+	sampleTransferNet _ OrderedCollection new.
+	
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	
+	Deposit register: 100 * peso on: account.
+	Transfer amount: 100 * peso from: account to: account2.
+	sampleTransferNet _ 100 * peso.
+	
+	accountTransferNet _ TransferNet from: account2.
+	
+	self assert: sampleTransferNet equals: accountTransferNet report.! !
+
+!TransferNetTest methodsFor: 'tests' stamp: 'BS 6/12/2022 15:32:58'!
+test03TransferNetOfAnAccountWithOneTransferenceReportsWithdrawCorrectly
+	|account accountTransferNet sampleTransferNet account2 |
+	sampleTransferNet _ OrderedCollection new.
+	
+	account _ ReceptiveAccount new.
+	account2 _ ReceptiveAccount new.
+	
+	Deposit register: 100 * peso on: account.
+	Transfer amount: 100 * peso from: account to: account2.
+	sampleTransferNet _ 100 negated * peso.
+	
+	accountTransferNet _ TransferNet from: account.
+	
+	self assert: sampleTransferNet equals: accountTransferNet report.! !
 
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros-Solucion'!
@@ -720,26 +829,18 @@ Object subclass: #AccountSummary
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!AccountSummary methodsFor: 'initialization' stamp: 'BS 6/11/2022 17:40:56'!
+!AccountSummary methodsFor: 'initialization' stamp: 'BS 6/13/2022 20:52:31'!
 initializeWith: anAccount
 	associatedAccount _ anAccount.! !
 
 
-!AccountSummary methodsFor: 'private' stamp: 'BS 6/11/2022 16:53:49'!
-stringFromType: aTransaction.
-	(aTransaction isKindOf: Deposit) ifTrue:[^'Depósito por ', aTransaction value asString].
-	(aTransaction isKindOf: Withdraw) ifTrue:[^'Extracción por ', aTransaction value asString].
-	(aTransaction isKindOf: TransferWithdrawLeg ) ifTrue:[^'Salida por transferencia de ', aTransaction value asString].
-	(aTransaction isKindOf: TransferDepositLeg ) ifTrue:[^'Entrada por transferencia de ', aTransaction value asString].! !
-
-
-!AccountSummary methodsFor: 'accessing' stamp: 'BS 6/11/2022 17:14:12'!
+!AccountSummary methodsFor: 'accessing' stamp: 'BS 6/13/2022 20:28:04'!
 report
 	|report |
 	
 	report _ OrderedCollection new.
 	
-	associatedAccount transactions do: [:aTransaction | report add: (self stringFromType: aTransaction)].
+	associatedAccount transactions do: [:aTransaction | report add: aTransaction transactionReport].
 	
 	report add: ('Balance = ', associatedAccount balance asString).
 	^report.! !
@@ -798,6 +899,15 @@ affectBalance: aBalance
 
 	^aBalance + value ! !
 
+
+!Deposit methodsFor: 'report' stamp: 'BS 6/13/2022 20:47:19'!
+affectTransferNet: aTransferNet
+	^0! !
+
+!Deposit methodsFor: 'report' stamp: 'BS 6/13/2022 21:19:56'!
+transactionReport
+	^'Depósito por ', value asString.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Deposit class' category: 'ServiciosFinancieros-Solucion'!
@@ -839,6 +949,16 @@ initializeWith: aTransfer
 
 	transfer := aTransfer! !
 
+
+!TransferLeg methodsFor: 'transfer net' stamp: 'BS 6/13/2022 20:37:14'!
+affectTransferNet: aTransferNet
+	self subclassResponsibility.! !
+
+
+!TransferLeg methodsFor: 'report' stamp: 'BS 6/13/2022 20:19:38'!
+transactionReport
+	self subclassResponsibility.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TransferLeg class' category: 'ServiciosFinancieros-Solucion'!
@@ -874,6 +994,16 @@ affectBalance: aBalance
 
 	^aBalance + self value! !
 
+
+!TransferDepositLeg methodsFor: 'report' stamp: 'BS 6/13/2022 20:23:07'!
+transactionReport
+	^'Entrada por transferencia de ', self value asString.! !
+
+
+!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'BS 6/13/2022 20:45:17'!
+affectTransferNet: aTransferNet
+	^aTransferNet + self value.! !
+
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros-Solucion'!
 TransferLeg subclass: #TransferWithdrawLeg
@@ -892,6 +1022,16 @@ depositLeg
 affectBalance: aBalance
 
 	^aBalance + self value negated! !
+
+
+!TransferWithdrawLeg methodsFor: 'report' stamp: 'BS 6/13/2022 20:24:22'!
+transactionReport
+	^'Salida por transferencia de ', self value asString.! !
+
+
+!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'BS 6/13/2022 20:44:44'!
+affectTransferNet: aTransferNet
+	^aTransferNet - self value.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Solucion'!
@@ -917,6 +1057,15 @@ value
 affectBalance: aBalance
 
 	^aBalance + value negated! !
+
+
+!Withdraw methodsFor: 'report' stamp: 'BS 6/13/2022 20:47:44'!
+affectTransferNet: aTransferNet
+	^0.! !
+
+!Withdraw methodsFor: 'report' stamp: 'BS 6/13/2022 20:24:50'!
+transactionReport
+	^'Extracción por ', self value asString.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1041,9 +1190,22 @@ Object subclass: #TransferNet
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferNet methodsFor: 'associating' stamp: 'BS 6/11/2022 17:38:35'!
+!TransferNet methodsFor: 'associating' stamp: 'BS 6/12/2022 15:16:42'!
 initializeFrom: anAccount 
-	associatedAccount := anAccount.! !
+	associatedAccount _ anAccount.! !
+
+
+!TransferNet methodsFor: 'accessing' stamp: 'BS 6/13/2022 20:45:33'!
+report
+	|transferNet|
+	transferNet _ 0.
+	associatedAccount transactions ifEmpty: [^0 * peso].
+	
+	transferNet _ associatedAccount transactions sum:[:aTransaction | 
+		aTransaction affectTransferNet: transferNet.
+		].
+	
+	^transferNet! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
