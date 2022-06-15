@@ -343,6 +343,36 @@ test15PortfolioCanNotIncludeAnyOfTheComposedAccountOfPortfolioToAdd
 			self assert: portfolioToModify accountsIsEmpty ]! !
 
 
+!classDefinition: #PortfolioTreePrinterTest category: 'ServiciosFinancieros-Solucion'!
+TestCase subclass: #PortfolioTreePrinterTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 17:30:48'!
+test02PortfolioTreeFromEmptyPortfolioHasOneElement
+	|portfolio portfolioTree |
+	portfolio _ Portfolio new.
+	
+	portfolioTree _ PortfolioTreePrinter from: portfolio.
+	
+	self assert: 1 equals: portfolioTree report size.
+	! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 17:30:24'!
+test02PortfolioTreeFromOneAccountPortfolioHasElements
+	|portfolio portfolioTree account |
+	account _ ReceptiveAccount named: 'Cuenta mia'.
+	portfolio _ Portfolio named: 'Portfolio de la familia' with: account.
+	
+	
+	portfolioTree _ PortfolioTreePrinter from: portfolio.
+	
+	self assert: 2 equals: portfolioTree report size.
+	! !
+
+
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #ReceptiveAccountTest
 	instanceVariableNames: ''
@@ -592,10 +622,14 @@ test06CannotTransferAZeroAmount
 
 !classDefinition: #Account category: 'ServiciosFinancieros-Solucion'!
 Object subclass: #Account
-	instanceVariableNames: ''
+	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
+
+!Account methodsFor: 'main protocol' stamp: 'BS 6/15/2022 17:27:14'!
+accountReportFor: aReport
+	^self subclassResponsibility.! !
 
 !Account methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 12:23:40'!
 balance
@@ -643,6 +677,12 @@ initialize
 	accounts := OrderedCollection new.
 	parents := OrderedCollection new.! !
 
+!Portfolio methodsFor: 'initialization' stamp: 'BS 6/15/2022 17:18:15'!
+initializeNamed: aName with: aReceptiveAccount 
+	self initialize.
+	name _ aName .
+	self add: aReceptiveAccount.! !
+
 
 !Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:19:36'!
 balance
@@ -653,6 +693,10 @@ balance
 hasRegistered: aTransaction
 
 	^accounts anySatisfy: [ :anAccount | anAccount hasRegistered: aTransaction ]! !
+
+!Portfolio methodsFor: 'main protocol' stamp: 'BS 6/15/2022 17:20:57'!
+name
+	^name.! !
 
 !Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:38:32'!
 transactions
@@ -719,6 +763,10 @@ assertCanAdd: accountToAdd
 	(self anyRootParentIsComposedBy: accountToAdd) ifTrue: [ self signalCanNotAddAccount ].
 ! !
 
+!Portfolio methodsFor: 'composition' stamp: 'BS 6/15/2022 17:09:38'!
+associatedAccounts
+	^accounts copy.! !
+
 !Portfolio methodsFor: 'composition' stamp: 'HAW 5/29/2019 16:24:54'!
 isComposedBy: anAccount
 
@@ -738,6 +786,11 @@ rootParents
 signalCanNotAddAccount
 	
 	self error: self class canNotAddAccountErrorMessage! !
+
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 17:27:39'!
+accountReportFor: aReport
+	^aReport reportPortfolio: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -765,6 +818,11 @@ with: anAccount with: anotherAccount
 		add: anotherAccount;
 		yourself! !
 
+
+!Portfolio class methodsFor: 'instance creation' stamp: 'BS 6/15/2022 16:47:28'!
+named: aString with: aReceptiveAccount 
+	^self new initializeNamed: aString with: aReceptiveAccount ! !
+
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Solucion'!
 Account subclass: #ReceptiveAccount
@@ -773,11 +831,15 @@ Account subclass: #ReceptiveAccount
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!ReceptiveAccount methodsFor: 'initialization' stamp: 'HernanWilkinson 7/13/2011 18:35'!
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'BS 6/15/2022 16:41:00'!
 initialize
-
 	super initialize.
 	transactions := OrderedCollection new.! !
+
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'BS 6/15/2022 17:18:25'!
+initializeNamed: aName 
+	self initialize.
+	name _ aName.! !
 
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'BS 6/11/2022 17:18:28'!
@@ -792,6 +854,10 @@ hasRegistered: aTransaction
 
 	^ transactions includes: aTransaction 
 ! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'BS 6/15/2022 17:21:12'!
+name
+	^name.! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
@@ -819,6 +885,21 @@ addedTo: aPortfolio
 isComposedBy: anAccount
 
 	^self = anAccount ! !
+
+
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 17:22:57'!
+accountReportFor: aReport
+	^aReport reportReceptiveAccount: self.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ReceptiveAccount class' category: 'ServiciosFinancieros-Solucion'!
+ReceptiveAccount class
+	instanceVariableNames: ''!
+
+!ReceptiveAccount class methodsFor: 'instance creation' stamp: 'BS 6/15/2022 16:39:41'!
+named: accountsOwnerName
+	^self new initializeNamed: accountsOwnerName.! !
 
 
 !classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
@@ -1110,6 +1191,48 @@ register: aValue on: account
 	account register: transaction.
 		
 	^ transaction! !
+
+
+!classDefinition: #PortfolioTreePrinter category: 'ServiciosFinancieros-Solucion'!
+Object subclass: #PortfolioTreePrinter
+	instanceVariableNames: 'associatedPortfolio'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Solucion'!
+
+!PortfolioTreePrinter methodsFor: 'initialization' stamp: 'BS 6/15/2022 17:07:44'!
+initializeFrom: aPortfolio 
+	associatedPortfolio _ aPortfolio.! !
+
+
+!PortfolioTreePrinter methodsFor: 'accessing' stamp: 'BS 6/15/2022 17:26:50'!
+report
+	|report|
+	report _ OrderedCollection new.
+	
+	report add: associatedPortfolio name.
+	associatedPortfolio associatedAccounts do: [:anAccount | report add: (anAccount accountReportFor: self)].
+	
+	^report.! !
+
+
+!PortfolioTreePrinter methodsFor: 'report format' stamp: 'BS 6/15/2022 17:25:42'!
+reportPortfolio: aPortfolio
+	^aPortfolio name.! !
+
+!PortfolioTreePrinter methodsFor: 'report format' stamp: 'BS 6/15/2022 17:18:58'!
+reportReceptiveAccount: anAccount
+	^anAccount name.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PortfolioTreePrinter class' category: 'ServiciosFinancieros-Solucion'!
+PortfolioTreePrinter class
+	instanceVariableNames: ''!
+
+!PortfolioTreePrinter class methodsFor: 'instance creation' stamp: 'BS 6/15/2022 16:17:15'!
+from: aPortfolio 
+	^self new initializeFrom: aPortfolio ! !
 
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Solucion'!
