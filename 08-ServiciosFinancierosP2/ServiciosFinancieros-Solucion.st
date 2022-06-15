@@ -799,9 +799,8 @@ register: aTransaction
 	transactions add: aTransaction 
 ! !
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
-transactions 
-
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'BS 6/14/2022 21:39:52'!
+transactions
 	^ transactions copy! !
 
 
@@ -834,16 +833,33 @@ initializeWith: anAccount
 	associatedAccount _ anAccount.! !
 
 
-!AccountSummary methodsFor: 'accessing' stamp: 'BS 6/13/2022 20:28:04'!
+!AccountSummary methodsFor: 'accessing' stamp: 'BS 6/13/2022 21:43:43'!
 report
 	|report |
 	
 	report _ OrderedCollection new.
 	
-	associatedAccount transactions do: [:aTransaction | report add: aTransaction transactionReport].
+	associatedAccount transactions do: [:aTransaction | report add: (aTransaction transactionReportFor: self)].
 	
 	report add: ('Balance = ', associatedAccount balance asString).
 	^report.! !
+
+
+!AccountSummary methodsFor: 'report format' stamp: 'BS 6/14/2022 21:45:24'!
+reportDeposit: aTransaction
+	^'Depósito por ', aTransaction value asString.! !
+
+!AccountSummary methodsFor: 'report format' stamp: 'BS 6/14/2022 21:47:24'!
+reportTransferDeposit: aTransaction
+	^'Entrada por transferencia de ', aTransaction value asString.! !
+
+!AccountSummary methodsFor: 'report format' stamp: 'BS 6/14/2022 21:48:09'!
+reportTransferWithdraw: aTransaction
+	^'Salida por transferencia de ', aTransaction value asString.! !
+
+!AccountSummary methodsFor: 'report format' stamp: 'BS 6/14/2022 21:49:08'!
+reportWithdraw: aTransaction
+	^'Extracción por ', aTransaction value asString.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -854,6 +870,7 @@ AccountSummary class
 !AccountSummary class methodsFor: 'instance creation' stamp: 'BS 6/11/2022 15:46:35'!
 from: anAccount 
 	^self new initializeWith: anAccount ! !
+
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Solucion'!
@@ -873,6 +890,11 @@ value
 affectBalance: aBalance
 
 	self subclassResponsibility ! !
+
+
+!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'BS 6/13/2022 21:42:27'!
+transactionReportFor: aReport
+	self subclassResponsibility.! !
 
 
 !classDefinition: #Deposit category: 'ServiciosFinancieros-Solucion'!
@@ -904,9 +926,9 @@ affectBalance: aBalance
 affectTransferNet: aTransferNet
 	^0! !
 
-!Deposit methodsFor: 'report' stamp: 'BS 6/13/2022 21:19:56'!
-transactionReport
-	^'Depósito por ', value asString.! !
+!Deposit methodsFor: 'report' stamp: 'BS 6/14/2022 21:45:13'!
+transactionReportFor: aReport
+	^aReport reportDeposit: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -955,8 +977,8 @@ affectTransferNet: aTransferNet
 	self subclassResponsibility.! !
 
 
-!TransferLeg methodsFor: 'report' stamp: 'BS 6/13/2022 20:19:38'!
-transactionReport
+!TransferLeg methodsFor: 'report' stamp: 'BS 6/13/2022 21:42:27'!
+transactionReportFor: aReport
 	self subclassResponsibility.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -995,9 +1017,9 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'report' stamp: 'BS 6/13/2022 20:23:07'!
-transactionReport
-	^'Entrada por transferencia de ', self value asString.! !
+!TransferDepositLeg methodsFor: 'report' stamp: 'BS 6/14/2022 21:46:44'!
+transactionReportFor: aReport
+	^aReport reportTransferDeposit: self.! !
 
 
 !TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'BS 6/13/2022 20:45:17'!
@@ -1024,9 +1046,9 @@ affectBalance: aBalance
 	^aBalance + self value negated! !
 
 
-!TransferWithdrawLeg methodsFor: 'report' stamp: 'BS 6/13/2022 20:24:22'!
-transactionReport
-	^'Salida por transferencia de ', self value asString.! !
+!TransferWithdrawLeg methodsFor: 'report' stamp: 'BS 6/14/2022 21:49:51'!
+transactionReportFor: aReport
+	^aReport reportTransferWithdraw: self.! !
 
 
 !TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'BS 6/13/2022 20:44:44'!
@@ -1063,9 +1085,9 @@ affectBalance: aBalance
 affectTransferNet: aTransferNet
 	^0.! !
 
-!Withdraw methodsFor: 'report' stamp: 'BS 6/13/2022 20:24:50'!
-transactionReport
-	^'Extracción por ', self value asString.! !
+!Withdraw methodsFor: 'report' stamp: 'BS 6/14/2022 21:49:40'!
+transactionReportFor: aReport
+	^aReport reportWithdraw: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1195,14 +1217,31 @@ initializeFrom: anAccount
 	associatedAccount _ anAccount.! !
 
 
-!TransferNet methodsFor: 'accessing' stamp: 'BS 6/13/2022 20:45:33'!
+!TransferNet methodsFor: 'report format' stamp: 'BS 6/14/2022 21:44:25'!
+reportDeposit: aTransaction
+	^0.! !
+
+!TransferNet methodsFor: 'report format' stamp: 'BS 6/14/2022 21:50:48'!
+reportTransferDeposit: aTransaction
+	^aTransaction value.! !
+
+!TransferNet methodsFor: 'report format' stamp: 'BS 6/14/2022 21:50:40'!
+reportTransferWithdraw: aTransaction
+	^aTransaction value negated.! !
+
+!TransferNet methodsFor: 'report format' stamp: 'BS 6/14/2022 21:48:58'!
+reportWithdraw: aTransaction
+	^0.! !
+
+
+!TransferNet methodsFor: 'accessing' stamp: 'BS 6/14/2022 21:53:29'!
 report
-	|transferNet|
+	|transferNet |
 	transferNet _ 0.
 	associatedAccount transactions ifEmpty: [^0 * peso].
 	
 	transferNet _ associatedAccount transactions sum:[:aTransaction | 
-		aTransaction affectTransferNet: transferNet.
+		aTransaction transactionReportFor: self.
 		].
 	
 	^transferNet! !
