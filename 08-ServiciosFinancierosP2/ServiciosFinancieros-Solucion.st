@@ -430,6 +430,29 @@ test05PortfolioTreeFromPortfolioWithPortfolioAndManyAccountsIndentsCorrectly
 	self assert: sampleTree equals: portfolioTree report.
 	! !
 
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'MU 6/15/2022 23:36:30'!
+test06PortfolioTreeFromPortfolioWithPortfolioWithAnotherPortfolioIndentsCorrectly
+	|portfolioTree childrenPortfolio familyPortfolio johnsAccount myAccount sampleTree otherPortfolio pepesAccount |
+	
+	johnsAccount _ ReceptiveAccount named: 'Cuenta de Juan'. 
+	pepesAccount _ ReceptiveAccount named: 'Cuenta de Pepe'. 
+	otherPortfolio _ Portfolio named: 'Otro Portfolio' with: pepesAccount.
+	childrenPortfolio _ Portfolio named: 'Portfolio de hijos' with: johnsAccount with: otherPortfolio . 
+	myAccount _ ReceptiveAccount named: 'Cuenta mia'. 
+	familyPortfolio _ Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+	
+	sampleTree _ {'Portfolio de la familia'.
+				'    Cuenta mia'.
+				'    Portfolio de hijos'.
+				'        Cuenta de Juan'.
+				'        Otro Portfolio'.
+				'            Cuenta de Pepe'.} asOrderedCollection.
+	
+	portfolioTree _ PortfolioTreePrinter from: familyPortfolio.
+	
+	self assert: sampleTree equals: portfolioTree report.
+	! !
+
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Solucion'!
 TestCase subclass: #ReceptiveAccountTest
@@ -1019,7 +1042,6 @@ AccountSummary class
 !AccountSummary class methodsFor: 'instance creation' stamp: 'BS 6/11/2022 15:46:35'!
 from: anAccount 
 	^self new initializeWith: anAccount ! !
-
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Solucion'!
