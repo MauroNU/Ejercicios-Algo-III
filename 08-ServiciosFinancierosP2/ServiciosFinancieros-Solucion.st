@@ -360,8 +360,8 @@ test01PortfolioTreeFromEmptyPortfolioHasOneElement
 	self assert: 1 equals: portfolioTree report size.
 	! !
 
-!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 17:30:24'!
-test02PortfolioTreeFromOneAccountPortfolioHasElements
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 21:23:49'!
+test02PortfolioTreeFromOneAccountPortfolioHasRightAmountOfElements
 	|portfolio portfolioTree account |
 	account _ ReceptiveAccount named: 'Cuenta mia'.
 	portfolio _ Portfolio named: 'Portfolio de la familia' with: account.
@@ -372,8 +372,29 @@ test02PortfolioTreeFromOneAccountPortfolioHasElements
 	self assert: 2 equals: portfolioTree report size.
 	! !
 
-!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 20:14:30'!
-test03PortfolioTreeFromPortfolioWithPortfolioAndManyAccounts
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 23:02:19'!
+test03PortfolioTreeFromPortfolioWithPortfolioAndManyAccountsHasRightAmountOfElements
+	|portfolioTree angiesAccount childrenPortfolio familyPortfolio johnsAccount myAccount sampleTree |
+	
+	johnsAccount _ ReceptiveAccount named: 'Cuenta de Juan'. 
+	angiesAccount _ ReceptiveAccount named: 'Cuenta de Angeles'. 
+	childrenPortfolio _ Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
+	myAccount _ ReceptiveAccount named: 'Cuenta mia'. 
+	familyPortfolio _ Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+	
+	sampleTree _ {'Portfolio de la familia'.
+					'    Cuenta mia'.
+					'    Portfolio de hijos'.
+					'        Cuenta de Juan'.
+					'        Cuenta de Angeles'.} asOrderedCollection.
+	
+	portfolioTree _ PortfolioTreePrinter from: familyPortfolio.
+	
+	self assert: sampleTree equals: portfolioTree report.
+	! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 21:23:03'!
+test04PortfolioTreeFromPortfolioWithPortfolioAndManyAccountsPrintsInOrder
 	|portfolioTree angiesAccount childrenPortfolio familyPortfolio johnsAccount myAccount |
 	
 	johnsAccount _ ReceptiveAccount named: 'Cuenta de Juan'. 
@@ -386,6 +407,27 @@ test03PortfolioTreeFromPortfolioWithPortfolioAndManyAccounts
 	portfolioTree _ PortfolioTreePrinter from: familyPortfolio .
 	
 	self assert: 5 equals: portfolioTree report size.
+	! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 23:01:20'!
+test05PortfolioTreeFromPortfolioWithPortfolioAndManyAccountsIndentsCorrectly
+	|portfolioTree angiesAccount childrenPortfolio familyPortfolio johnsAccount myAccount sampleTree |
+	
+	johnsAccount _ ReceptiveAccount named: 'Cuenta de Juan'. 
+	angiesAccount _ ReceptiveAccount named: 'Cuenta de Angeles'. 
+	childrenPortfolio _ Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
+	myAccount _ ReceptiveAccount named: 'Cuenta mia'. 
+	familyPortfolio _ Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+	
+	sampleTree _ {'Portfolio de la familia'.
+				'    Cuenta mia'.
+				'    Portfolio de hijos'.
+				'        Cuenta de Juan'.
+				'        Cuenta de Angeles'.} asOrderedCollection.
+	
+	portfolioTree _ PortfolioTreePrinter from: familyPortfolio.
+	
+	self assert: sampleTree equals: portfolioTree report.
 	! !
 
 
@@ -1242,21 +1284,27 @@ report
 	^report.! !
 
 
-!PortfolioTreePrinter methodsFor: 'report format' stamp: 'BS 6/15/2022 21:18:59'!
+!PortfolioTreePrinter methodsFor: 'report format' stamp: 'BS 6/15/2022 22:43:21'!
 reportPortfolio: aPortfolio
 	|innerTree|
 	innerTree _ PortfolioTreePrinter from: aPortfolio.
 	
-	^innerTree report.! !
+	^innerTree indentedReport.! !
 
-!PortfolioTreePrinter methodsFor: 'report format' stamp: 'BS 6/15/2022 21:15:05'!
+!PortfolioTreePrinter methodsFor: 'report format' stamp: 'BS 6/15/2022 22:52:34'!
 reportReceptiveAccount: anAccount
 	|elementForReport|
 	elementForReport _ OrderedCollection new.
 	
-	elementForReport add: anAccount name.
+	elementForReport add: ('    ', anAccount name).
 	
 	^elementForReport.! !
+
+
+!PortfolioTreePrinter methodsFor: 'private' stamp: 'BS 6/15/2022 23:03:38'!
+indentedReport
+	
+	^self report collect: [:aString | '    ', aString].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
