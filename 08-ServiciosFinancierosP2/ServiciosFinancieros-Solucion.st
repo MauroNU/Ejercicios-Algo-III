@@ -350,7 +350,7 @@ TestCase subclass: #PortfolioTreePrinterTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 20:04:36'!
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'BS 6/15/2022 20:04:36'!
 test01PortfolioTreeFromEmptyPortfolioHasOneElement
 	|portfolio portfolioTree |
 	portfolio _ Portfolio new.
@@ -360,7 +360,7 @@ test01PortfolioTreeFromEmptyPortfolioHasOneElement
 	self assert: 1 equals: portfolioTree report size.
 	! !
 
-!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 21:23:49'!
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'BS 6/15/2022 21:23:49'!
 test02PortfolioTreeFromOneAccountPortfolioHasRightAmountOfElements
 	|portfolio portfolioTree account |
 	account _ ReceptiveAccount named: 'Cuenta mia'.
@@ -372,7 +372,7 @@ test02PortfolioTreeFromOneAccountPortfolioHasRightAmountOfElements
 	self assert: 2 equals: portfolioTree report size.
 	! !
 
-!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 23:02:19'!
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'BS 6/15/2022 23:02:19'!
 test03PortfolioTreeFromPortfolioWithPortfolioAndManyAccountsHasRightAmountOfElements
 	|portfolioTree angiesAccount childrenPortfolio familyPortfolio johnsAccount myAccount sampleTree |
 	
@@ -393,7 +393,7 @@ test03PortfolioTreeFromPortfolioWithPortfolioAndManyAccountsHasRightAmountOfElem
 	self assert: sampleTree equals: portfolioTree report.
 	! !
 
-!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 21:23:03'!
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'BS 6/15/2022 21:23:03'!
 test04PortfolioTreeFromPortfolioWithPortfolioAndManyAccountsPrintsInOrder
 	|portfolioTree angiesAccount childrenPortfolio familyPortfolio johnsAccount myAccount |
 	
@@ -409,7 +409,7 @@ test04PortfolioTreeFromPortfolioWithPortfolioAndManyAccountsPrintsInOrder
 	self assert: 5 equals: portfolioTree report size.
 	! !
 
-!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 23:01:20'!
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'BS 6/15/2022 23:01:20'!
 test05PortfolioTreeFromPortfolioWithPortfolioAndManyAccountsIndentsCorrectly
 	|portfolioTree angiesAccount childrenPortfolio familyPortfolio johnsAccount myAccount sampleTree |
 	
@@ -430,7 +430,7 @@ test05PortfolioTreeFromPortfolioWithPortfolioAndManyAccountsIndentsCorrectly
 	self assert: sampleTree equals: portfolioTree report.
 	! !
 
-!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'MU 6/15/2022 23:36:30'!
+!PortfolioTreePrinterTest methodsFor: 'tests' stamp: 'MU 6/15/2022 23:36:30'!
 test06PortfolioTreeFromPortfolioWithPortfolioWithAnotherPortfolioIndentsCorrectly
 	|portfolioTree childrenPortfolio familyPortfolio johnsAccount myAccount sampleTree otherPortfolio pepesAccount |
 	
@@ -604,7 +604,7 @@ TestCase subclass: #TransferTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:07:03'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:07:03'!
 test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAccount
 
 	| destinationAccount originAccount |
@@ -620,7 +620,7 @@ test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAcco
 	self assert: 8 * peso equals: originAccount balance.
 	self assert: 12 * peso equals: destinationAccount balance.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:12:28'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:12:28'!
 test02ATransferKnowsItsValue
 
 	| destinationAccount originAccount transfer |
@@ -635,7 +635,7 @@ test02ATransferKnowsItsValue
 	
 	self assert: 2 * peso equals: transfer value.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:44'!
 test03DepositLegKnowsItsWithdrawCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -650,7 +650,7 @@ test03DepositLegKnowsItsWithdrawCounterpart
 	
 	self assert: transfer withdrawLeg equals: transfer depositLeg withdrawLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:51'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:51'!
 test04WithdrawLegKnowsItsDepositCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -665,7 +665,7 @@ test04WithdrawLegKnowsItsDepositCounterpart
 	
 	self assert: transfer depositLeg equals: transfer withdrawLeg depositLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:36'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:36'!
 test05OriginAndDestinationAccountsCannotBeTheSame
 
 	| originAccount |
@@ -681,7 +681,7 @@ test05OriginAndDestinationAccountsCannotBeTheSame
 		]
 ! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:44'!
 test06CannotTransferAZeroAmount
 
 	| originAccount destinationAccount |
@@ -821,6 +821,10 @@ add: accountToAdd
 	! !
 
 
+!Portfolio methodsFor: 'private' stamp: 'BS 6/15/2022 21:09:21'!
+accountReportFor: aReport
+	^aReport reportPortfolio: self.! !
+
 !Portfolio methodsFor: 'private' stamp: 'HAW 5/25/2019 11:42:55'!
 addTransactionsTo: aCollectionOfTransactions
 
@@ -874,36 +878,16 @@ signalCanNotAddAccount
 	
 	self error: self class canNotAddAccountErrorMessage! !
 
-
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 21:09:21'!
-accountReportFor: aReport
-	^aReport reportPortfolio: self.! !
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Solucion'!
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:48:55'!
+!Portfolio class methodsFor: 'error messages' stamp: 'HAW 5/25/2019 11:48:55'!
 canNotAddAccountErrorMessage
 	
 	^'Can not add repeated account to a portfolio'! !
-
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:18:21'!
-with: anAccount
-
-	^self new 
-		add: anAccount;
-		yourself! !
-
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:23:59'!
-with: anAccount with: anotherAccount
-
-	^self new 
-		add: anAccount;
-		add: anotherAccount;
-		yourself! !
 
 
 !Portfolio class methodsFor: 'instance creation' stamp: 'BS 6/15/2022 20:07:06'!
@@ -913,6 +897,21 @@ named: aName with: aReceptiveAccount
 !Portfolio class methodsFor: 'instance creation' stamp: 'BS 6/15/2022 20:10:35'!
 named: aName with: anAccount with: anotherAccount 
 	^self new initializeNamed: aName with: anAccount with: anotherAccount! !
+
+!Portfolio class methodsFor: 'instance creation' stamp: 'HAW 5/25/2019 11:18:21'!
+with: anAccount
+
+	^self new 
+		add: anAccount;
+		yourself! !
+
+!Portfolio class methodsFor: 'instance creation' stamp: 'HAW 5/25/2019 11:23:59'!
+with: anAccount with: anotherAccount
+
+	^self new 
+		add: anAccount;
+		add: anotherAccount;
+		yourself! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Solucion'!
@@ -961,6 +960,10 @@ transactions
 	^ transactions copy! !
 
 
+!ReceptiveAccount methodsFor: 'private' stamp: 'BS 6/15/2022 20:30:10'!
+accountReportFor: aReport
+	^aReport reportReceptiveAccount: self.! !
+
 !ReceptiveAccount methodsFor: 'private' stamp: 'HAW 5/25/2019 11:38:52'!
 addTransactionsTo: aCollectionOfTransactions
 
@@ -976,11 +979,6 @@ addedTo: aPortfolio
 isComposedBy: anAccount
 
 	^self = anAccount ! !
-
-
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 20:30:10'!
-accountReportFor: aReport
-	^aReport reportReceptiveAccount: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1063,7 +1061,7 @@ affectBalance: aBalance
 	self subclassResponsibility ! !
 
 
-!AccountTransaction methodsFor: 'as yet unclassified' stamp: 'BS 6/13/2022 21:42:27'!
+!AccountTransaction methodsFor: 'private' stamp: 'BS 6/13/2022 21:42:27'!
 transactionReportFor: aReport
 	self subclassResponsibility.! !
 
@@ -1093,11 +1091,11 @@ affectBalance: aBalance
 	^aBalance + value ! !
 
 
-!Deposit methodsFor: 'report' stamp: 'BS 6/13/2022 20:47:19'!
+!Deposit methodsFor: 'private' stamp: 'BS 6/13/2022 20:47:19'!
 affectTransferNet: aTransferNet
 	^0! !
 
-!Deposit methodsFor: 'report' stamp: 'BS 6/14/2022 21:45:13'!
+!Deposit methodsFor: 'private' stamp: 'BS 6/14/2022 21:45:13'!
 transactionReportFor: aReport
 	^aReport reportDeposit: self.! !
 
@@ -1112,8 +1110,7 @@ for: aValue
 
 	^ self new initializeFor: aValue ! !
 
-
-!Deposit class methodsFor: 'as yet unclassified' stamp: 'LL 7/8/2021 21:45:00'!
+!Deposit class methodsFor: 'instance creation' stamp: 'LL 7/8/2021 21:45:00'!
 register: aValue on: account
 
 	| transaction |
@@ -1148,7 +1145,7 @@ affectTransferNet: aTransferNet
 	self subclassResponsibility.! !
 
 
-!TransferLeg methodsFor: 'report' stamp: 'BS 6/13/2022 21:42:27'!
+!TransferLeg methodsFor: 'private' stamp: 'BS 6/13/2022 21:42:27'!
 transactionReportFor: aReport
 	self subclassResponsibility.! !
 
@@ -1158,7 +1155,7 @@ transactionReportFor: aReport
 TransferLeg class
 	instanceVariableNames: ''!
 
-!TransferLeg class methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 22:45:01'!
+!TransferLeg class methodsFor: 'instance creation' stamp: 'LL 9/20/2020 22:45:01'!
 of: aTransfer on: anAccount
 
 	| transaction |
@@ -1188,14 +1185,13 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'report' stamp: 'BS 6/14/2022 21:46:44'!
-transactionReportFor: aReport
-	^aReport reportTransferDeposit: self.! !
-
-
-!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'BS 6/13/2022 20:45:17'!
+!TransferDepositLeg methodsFor: 'private' stamp: 'BS 6/13/2022 20:45:17'!
 affectTransferNet: aTransferNet
 	^aTransferNet + self value.! !
+
+!TransferDepositLeg methodsFor: 'private' stamp: 'BS 6/14/2022 21:46:44'!
+transactionReportFor: aReport
+	^aReport reportTransferDeposit: self.! !
 
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros-Solucion'!
@@ -1217,14 +1213,13 @@ affectBalance: aBalance
 	^aBalance + self value negated! !
 
 
-!TransferWithdrawLeg methodsFor: 'report' stamp: 'BS 6/14/2022 21:49:51'!
-transactionReportFor: aReport
-	^aReport reportTransferWithdraw: self.! !
-
-
-!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'BS 6/13/2022 20:44:44'!
+!TransferWithdrawLeg methodsFor: 'private' stamp: 'BS 6/13/2022 20:44:44'!
 affectTransferNet: aTransferNet
 	^aTransferNet - self value.! !
+
+!TransferWithdrawLeg methodsFor: 'private' stamp: 'BS 6/14/2022 21:49:51'!
+transactionReportFor: aReport
+	^aReport reportTransferWithdraw: self.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Solucion'!
@@ -1271,8 +1266,7 @@ for: aValue
 
 	^ self new initializeFor: aValue ! !
 
-
-!Withdraw class methodsFor: 'as yet unclassified' stamp: 'LL 7/8/2021 21:45:05'!
+!Withdraw class methodsFor: 'instance creation' stamp: 'LL 7/8/2021 21:45:05'!
 register: aValue on: account
 
 	| transaction |
