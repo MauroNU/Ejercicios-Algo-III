@@ -350,8 +350,8 @@ TestCase subclass: #PortfolioTreePrinterTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 17:30:48'!
-test02PortfolioTreeFromEmptyPortfolioHasOneElement
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 20:04:36'!
+test01PortfolioTreeFromEmptyPortfolioHasOneElement
 	|portfolio portfolioTree |
 	portfolio _ Portfolio new.
 	
@@ -370,6 +370,22 @@ test02PortfolioTreeFromOneAccountPortfolioHasElements
 	portfolioTree _ PortfolioTreePrinter from: portfolio.
 	
 	self assert: 2 equals: portfolioTree report size.
+	! !
+
+!PortfolioTreePrinterTest methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 20:14:30'!
+test03PortfolioTreeFromPortfolioWithPortfolioAndManyAccounts
+	|portfolioTree angiesAccount childrenPortfolio familyPortfolio johnsAccount myAccount |
+	
+	johnsAccount _ ReceptiveAccount named: 'Cuenta de Juan'. 
+	angiesAccount _ ReceptiveAccount named: 'Cuenta de Angeles'. 
+	childrenPortfolio _ Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
+	myAccount _ ReceptiveAccount named: 'Cuenta mia'. 
+	familyPortfolio _ Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+	
+	
+	portfolioTree _ PortfolioTreePrinter from: familyPortfolio .
+	
+	self assert: 5 equals: portfolioTree report size.
 	! !
 
 
@@ -627,7 +643,7 @@ Object subclass: #Account
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Solucion'!
 
-!Account methodsFor: 'main protocol' stamp: 'BS 6/15/2022 17:27:14'!
+!Account methodsFor: 'main protocol' stamp: 'BS 6/15/2022 20:30:10'!
 accountReportFor: aReport
 	^self subclassResponsibility.! !
 
@@ -682,6 +698,12 @@ initializeNamed: aName with: aReceptiveAccount
 	self initialize.
 	name _ aName .
 	self add: aReceptiveAccount.! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'BS 6/15/2022 20:11:16'!
+initializeNamed: aName with: anAccount with: anotherAccount 
+	name _ aName.
+	accounts add: anAccount.
+	accounts add: anotherAccount.! !
 
 
 !Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:19:36'!
@@ -788,7 +810,7 @@ signalCanNotAddAccount
 	self error: self class canNotAddAccountErrorMessage! !
 
 
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 17:27:39'!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 21:09:21'!
 accountReportFor: aReport
 	^aReport reportPortfolio: self.! !
 
@@ -819,9 +841,13 @@ with: anAccount with: anotherAccount
 		yourself! !
 
 
-!Portfolio class methodsFor: 'instance creation' stamp: 'BS 6/15/2022 16:47:28'!
-named: aString with: aReceptiveAccount 
-	^self new initializeNamed: aString with: aReceptiveAccount ! !
+!Portfolio class methodsFor: 'instance creation' stamp: 'BS 6/15/2022 20:07:06'!
+named: aName with: aReceptiveAccount 
+	^self new initializeNamed: aName with: aReceptiveAccount ! !
+
+!Portfolio class methodsFor: 'instance creation' stamp: 'BS 6/15/2022 20:10:35'!
+named: aName with: anAccount with: anotherAccount 
+	^self new initializeNamed: aName with: anAccount with: anotherAccount! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Solucion'!
@@ -887,7 +913,7 @@ isComposedBy: anAccount
 	^self = anAccount ! !
 
 
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 17:22:57'!
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'BS 6/15/2022 20:30:10'!
 accountReportFor: aReport
 	^aReport reportReceptiveAccount: self.! !
 
@@ -897,9 +923,9 @@ accountReportFor: aReport
 ReceptiveAccount class
 	instanceVariableNames: ''!
 
-!ReceptiveAccount class methodsFor: 'instance creation' stamp: 'BS 6/15/2022 16:39:41'!
-named: accountsOwnerName
-	^self new initializeNamed: accountsOwnerName.! !
+!ReceptiveAccount class methodsFor: 'instance creation' stamp: 'BS 6/15/2022 20:07:17'!
+named: aName
+	^self new initializeNamed: aName.! !
 
 
 !classDefinition: #AccountSummary category: 'ServiciosFinancieros-Solucion'!
@@ -1205,24 +1231,32 @@ initializeFrom: aPortfolio
 	associatedPortfolio _ aPortfolio.! !
 
 
-!PortfolioTreePrinter methodsFor: 'accessing' stamp: 'BS 6/15/2022 17:26:50'!
+!PortfolioTreePrinter methodsFor: 'accessing' stamp: 'BS 6/15/2022 21:10:46'!
 report
 	|report|
 	report _ OrderedCollection new.
 	
 	report add: associatedPortfolio name.
-	associatedPortfolio associatedAccounts do: [:anAccount | report add: (anAccount accountReportFor: self)].
+	associatedPortfolio associatedAccounts do: [:anAccount | report addAllLast:(anAccount accountReportFor: self)].
 	
 	^report.! !
 
 
-!PortfolioTreePrinter methodsFor: 'report format' stamp: 'BS 6/15/2022 17:25:42'!
+!PortfolioTreePrinter methodsFor: 'report format' stamp: 'BS 6/15/2022 21:18:59'!
 reportPortfolio: aPortfolio
-	^aPortfolio name.! !
+	|innerTree|
+	innerTree _ PortfolioTreePrinter from: aPortfolio.
+	
+	^innerTree report.! !
 
-!PortfolioTreePrinter methodsFor: 'report format' stamp: 'BS 6/15/2022 17:18:58'!
+!PortfolioTreePrinter methodsFor: 'report format' stamp: 'BS 6/15/2022 21:15:05'!
 reportReceptiveAccount: anAccount
-	^anAccount name.! !
+	|elementForReport|
+	elementForReport _ OrderedCollection new.
+	
+	elementForReport add: anAccount name.
+	
+	^elementForReport.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
